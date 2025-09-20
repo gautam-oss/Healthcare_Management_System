@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Update Appointment - Healthcare Management System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-edit"></i> Manage Appointment</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Appointment Info -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>Patient:</strong> {{ appointment.patient }}</p>
+                            <p><strong>Date:</strong> {{ appointment.appointment_date }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Time:</strong> {{ appointment.appointment_time }}</p>
+                            <p><strong>Current Status:</strong> 
+                                <span class="badge bg-warning">{{ appointment.get_status_display }}</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <strong>Reason for Visit:</strong>
+                        <p class="mt-2">{{ appointment.reason }}</p>
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Update Form -->
+                    <h5><i class="fas fa-clipboard-check"></i> Update Status</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">New Status</label>
+                                    <select name="status" class="form-select" required>
+                                        <option value="pending" {% if appointment.status == 'pending' %}selected{% endif %}>
+                                            📅 Pending
+                                        </option>
+                                        <option value="confirmed" {% if appointment.status == 'confirmed' %}selected{% endif %}>
+                                            ✅ Confirmed
+                                        </option>
+                                        <option value="completed" {% if appointment.status == 'completed' %}selected{% endif %}>
+                                            ✔️ Completed
+                                        </option>
+                                        <option value="cancelled" {% if appointment.status == 'cancelled' %}selected{% endif %}>
+                                            ❌ Cancelled
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Doctor Notes</label>
+                                    <textarea name="notes" class="form-control" rows="4" 
+                                              placeholder="Add notes about this appointment...">{{ appointment.notes }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'appointments:my_appointments' %}" class="btn btn-secondary me-md-2">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Update Appointment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

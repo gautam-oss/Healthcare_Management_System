@@ -48,6 +48,15 @@
                             {% if appointment.notes %}
                                 <p><strong>Notes:</strong> {{ appointment.notes }}</p>
                             {% endif %}
+                            
+                            <!-- ADD THIS SECTION FOR DOCTORS -->
+                            {% if user.user_type == 'doctor' %}
+                                <div class="mt-2">
+                                    <a href="{% url 'appointments:update' appointment.id %}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i> Manage Appointment
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                         <div class="card-footer text-muted">
                             <small>Booked on {{ appointment.created_at|date:"M d, Y" }}</small>

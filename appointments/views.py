@@ -48,3 +48,32 @@ def appointment_success(request, appointment_id):
         return redirect('appointments:my_appointments')
     
     return render(request, 'appointments/success.html', {'appointment': appointment})
+
+@login_required
+def update_appointment(request, appointment_id):
+    """Doctor can update appointment status"""
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    
+    # Only doctors can update appointments
+    if not hasattr(request.user, 'doctor'):
+        messages.error(request, 'Only doctors can update appointments.')
+        return redirect('appointments:my_appointments')
+    
+    # Only the assigned doctor can update
+    if appointment.doctor != request.user.doctor:
+        messages.error(request, 'You can only update your own appointments.')
+        return redirect('appointments:my_appointments')
+    
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        notes = request.POST.get('notes', '')
+        
+        if new_status in ['pending', 'confirmed', 'completed', 'cancelled']:
+            appointment.status = new_status
+            appointment.notes = notes
+            appointment.save()
+            
+            messages.success(request, f'Appointment status updated to {new_status}!')
+            return redirect('appointments:my_appointments')
+    
+    return render(request, 'appointments/update.html', {'appointment': appointment})
