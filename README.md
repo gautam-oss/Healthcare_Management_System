@@ -23,6 +23,7 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ![Book Appointment](assets/images/book-appointment.png)
 
 ## 📋 Table of Contents
+- [Features](#-features)
 - [Screenshots](#-screenshots)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
