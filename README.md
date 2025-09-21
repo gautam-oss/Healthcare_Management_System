@@ -22,21 +22,6 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ### Appointment Booking
 ![Book Appointment](assets/images/book-appointment.png)
 
-## 📋 Table of Contents
-- [Features](#-features)
-- [Screenshots](#-screenshots)
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
-- [Installation & Setup](#-installation--setup)
-  - [Local Development](#local-development)
-  - [Docker Deployment](#docker-deployment)
-- [Configuration](#-configuration)
-- [Usage](#-usage)
-- [API Documentation](#-api-documentation)
-- [Contributing](#-contributing)
-- [License](#-license)
-
 ## ✨ Features
 
 ### 👥 **User Management**
