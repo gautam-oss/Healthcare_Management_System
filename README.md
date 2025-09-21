@@ -8,6 +8,20 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
+## 📱 Screenshots
+
+### Patient Dashboard
+![Patient Dashboard](assets/images/patient-dashboard.png)
+
+### Doctor Interface
+![Doctor Dashboard](assets/images/doctor-dashboard.png)
+
+### AI Chat Interface
+![AI Assistant](assets/images/ai-chat.png)
+
+### Appointment Booking
+![Book Appointment](assets/images/book-appointment.png)
+
 ## 📋 Table of Contents
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
@@ -274,19 +288,7 @@ For production deployment, ensure:
 - System configuration and monitoring
 - AI conversation logs and analytics
 
-## 📱 Screenshots
 
-### Patient Dashboard
-![Patient Dashboard](assets/images/patient-dashboard.png)
-
-### Doctor Interface
-![Doctor Dashboard](assets/images/doctor-dashboard.png)
-
-### AI Chat Interface
-![AI Assistant](assets/images/ai-chat.png)
-
-### Appointment Booking
-![Book Appointment](assets/images/book-appointment.png)
 
 ## 🔧 API Documentation
 
