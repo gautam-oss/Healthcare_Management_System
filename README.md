@@ -392,7 +392,7 @@ Found a bug? Please report it:
 For support and questions:
 - **Documentation**: Check this README first
 - **Issues**: [GitHub Issues](https://github.com/yourusername/Healthcare-Management-System/issues)
-- **Email**: your-email@example.com
+- **Email**: gautamkumarxpvt@example.com
 
 ## 🗺️ Roadmap
 
