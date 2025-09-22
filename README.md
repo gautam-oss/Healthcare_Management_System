@@ -391,7 +391,7 @@ Found a bug? Please report it:
 
 For support and questions:
 - **Documentation**: Check this README first
-- **Issues**: [GitHub Issues](https://github.com/yourusername/Healthcare-Management-System/issues)
+- **Issues**: [GitHub Issues](https://github.com/gautam-oss/Healthcare-Management-System/issues)
 - **Email**: gautamkumarxpvt@example.com
 
 ## 🗺️ Roadmap
@@ -443,7 +443,7 @@ copies of the Software...
 
 ```bash
 # Clone and setup
-git clone https://github.com/yourusername/Healthcare-Management-System.git
+git clone https://github.com/gautam-oss/Healthcare-Management-System.git
 cd Healthcare-Management-System
 python -m venv venv
 source venv/bin/activate
