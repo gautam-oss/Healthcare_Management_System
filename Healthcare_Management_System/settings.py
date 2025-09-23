@@ -114,3 +114,4 @@ GEMINI_API_KEY = config('GEMINI_API_KEY')
 # Login/Logout redirects
 LOGIN_REDIRECT_URL = 'users:dashboard'
 LOGOUT_REDIRECT_URL = 'users:login'
+
