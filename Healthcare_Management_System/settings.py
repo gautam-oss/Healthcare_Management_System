@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,6 +76,8 @@ DATABASES = {
         'NAME': BASE_DIR / "db.sqlite3",
     }
 }
+
+DATABASES["default"] = dj_database_url.parse("postgresql://healthcarems_postgresql_database_user:S2S9xYb5VmvyE5PiCYWV7uRZgiwRKRRe@dpg-d39i0ugdl3ps73a8u07g-a.oregon-postgres.render.com/healthcarems_postgresql_database")
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
