@@ -4,19 +4,23 @@ from .models import User, Patient, Doctor
 
 class PatientRegistrationForm(UserCreationForm):
     """Patient registration form"""
-    first_name = forms.CharField(max_length=30, required=True)
-    last_name = forms.CharField(max_length=30, required=True)
-    email = forms.EmailField(required=True)
-    phone = forms.CharField(max_length=15, required=True)
-    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=False)
-    address = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
-    emergency_contact = forms.CharField(max_length=15, required=False)
-    
-    class Meta:
+    first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+    last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+    phone = forms.CharField(max_length=15, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}), required=False)
+    address = forms.CharField(widget=forms.Textarea(attrs={'rows': 3, 'class': 'form-control', 'placeholder': ' '}), required=False)
+    emergency_contact = forms.CharField(max_length=15, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+
+    class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone')
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': ' '}),
+        }
     
     def save(self, commit=True):
+        # ... (rest of the save method is unchanged)
         user = super().save(commit=False)
         user.user_type = 'patient'
         user.first_name = self.cleaned_data['first_name']
@@ -36,20 +40,24 @@ class PatientRegistrationForm(UserCreationForm):
 
 class DoctorRegistrationForm(UserCreationForm):
     """Doctor registration form"""
-    first_name = forms.CharField(max_length=30, required=True)
-    last_name = forms.CharField(max_length=30, required=True)
-    email = forms.EmailField(required=True)
-    phone = forms.CharField(max_length=15, required=True)
-    specialization = forms.CharField(max_length=100, required=True)
-    license_number = forms.CharField(max_length=50, required=True)
-    experience_years = forms.IntegerField(min_value=0, required=True)
-    consultation_fee = forms.DecimalField(max_digits=10, decimal_places=2, required=True)
-    
-    class Meta:
+    first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+    last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+    phone = forms.CharField(max_length=15, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+    specialization = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+    license_number = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+    experience_years = forms.IntegerField(min_value=0, required=True, widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+    consultation_fee = forms.DecimalField(max_digits=10, decimal_places=2, required=True, widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': ' '}))
+
+    class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone')
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': ' '}),
+        }
     
     def save(self, commit=True):
+        # ... (rest of the save method is unchanged)
         user = super().save(commit=False)
         user.user_type = 'doctor'
         user.first_name = self.cleaned_data['first_name']

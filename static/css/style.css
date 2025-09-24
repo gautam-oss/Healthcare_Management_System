@@ -35,3 +35,107 @@
 .dropdown-menu .dropdown-item {
     padding: 0;
 }
+
+/* Add this to your static/css/style.css file */
+
+/* Style the logout button to look like a dropdown item */
+.dropdown-item button {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 0.375rem 1.5rem;
+    color: #212529;
+    text-decoration: none;
+    display: block;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.dropdown-item button:hover {
+    color: #1e2125;
+    background-color: #e9ecef;
+}
+
+.dropdown-item button:focus {
+    color: #1e2125;
+    background-color: #e9ecef;
+    outline: 0;
+}
+
+/* Remove form margin in dropdown */
+.dropdown-menu form {
+    margin: 0;
+}
+
+.dropdown-menu .dropdown-item {
+    padding: 0;
+}
+
+/* New styles for the registration page */
+
+body {
+    background: linear-gradient(to right, #f8f9fa, #e9ecef);
+}
+
+.register-container {
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+}
+
+.register-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.register-card .card-header {
+    background: linear-gradient(to right, #007bff, #0056b3);
+    color: white;
+    padding: 2rem;
+    border-bottom: none;
+}
+
+.register-card .card-header h3 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.register-card .card-body {
+    padding: 2.5rem;
+}
+
+.form-floating > .form-control {
+    border-radius: 10px;
+}
+
+.form-floating > label {
+    padding-left: 1.5rem;
+}
+
+.btn-register {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    background: linear-gradient(to right, #28a745, #218838);
+    border: none;
+}
+
+.btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.card-footer a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.card-footer a:hover {
+    color: #0056b3;
+}
