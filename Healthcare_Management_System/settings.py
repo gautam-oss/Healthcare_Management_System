@@ -12,7 +12,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG","False").lower() == "True"
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split("")
+ALLOWED_HOSTS = os.environ.get("https://healthcare-management-system-awe0.onrender.com").split("")
 
 # Application definition
 INSTALLED_APPS = [
