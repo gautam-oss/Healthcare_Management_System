@@ -2,19 +2,21 @@
 {% block title %}Register {{ user_type }} - Healthcare Management System{% endblock %}
 
 {% block content %}
-<div class="container register-container">
+<div class="container register-container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card register-card">
-                <div class="card-header text-center">
-                    <h3><i class="fas fa-user-plus"></i> Register as {{ user_type }}</h3>
-                    <p class="mb-0">Create your account to get started</p>
+        <div class="col-lg-7 col-md-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header text-center bg-success text-white rounded-top-4">
+                    <h3 class="mb-1"><i class="fas fa-user-plus"></i> Register as {{ user_type }}</h3>
+                    <p class="mb-0 small">Create your account to get started</p>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form method="post" novalidate>
                         {% csrf_token %}
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
+
+                        <!-- Username & Email -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
                                 <div class="form-floating">
                                     {{ form.username }}
                                     <label for="{{ form.username.id_for_label }}">Username</label>
@@ -23,7 +25,7 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <div class="form-floating">
                                     {{ form.email }}
                                     <label for="{{ form.email.id_for_label }}">Email</label>
@@ -34,14 +36,15 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
+                        <!-- First & Last Name -->
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
                                 <div class="form-floating">
                                     {{ form.first_name }}
                                     <label for="{{ form.first_name.id_for_label }}">First Name</label>
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <div class="form-floating">
                                     {{ form.last_name }}
                                     <label for="{{ form.last_name.id_for_label }}">Last Name</label>
@@ -49,53 +52,55 @@
                             </div>
                         </div>
 
-                        <div class="form-floating mb-3">
+                        <!-- Phone -->
+                        <div class="form-floating mt-3">
                             {{ form.phone }}
                             <label for="{{ form.phone.id_for_label }}">Phone Number</label>
                         </div>
 
+                        <!-- Conditional Fields -->
                         {% if user_type == 'Patient' %}
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-6">
                                     <div class="form-floating">
                                         {{ form.date_of_birth }}
                                         <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth</label>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6">
                                     <div class="form-floating">
                                         {{ form.emergency_contact }}
                                         <label for="{{ form.emergency_contact.id_for_label }}">Emergency Contact</label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-floating mb-3">
+                            <div class="form-floating mt-3">
                                 {{ form.address }}
                                 <label for="{{ form.address.id_for_label }}">Address</label>
                             </div>
                         {% else %}
-                             <div class="row">
-                                <div class="col-md-6 mb-3">
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-6">
                                     <div class="form-floating">
                                         {{ form.specialization }}
                                         <label for="{{ form.specialization.id_for_label }}">Specialization</label>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6">
                                     <div class="form-floating">
                                         {{ form.license_number }}
                                         <label for="{{ form.license_number.id_for_label }}">License Number</label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-6">
                                     <div class="form-floating">
                                         {{ form.experience_years }}
                                         <label for="{{ form.experience_years.id_for_label }}">Experience (Years)</label>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6">
                                     <div class="form-floating">
                                         {{ form.consultation_fee }}
                                         <label for="{{ form.consultation_fee.id_for_label }}">Consultation Fee</label>
@@ -104,8 +109,9 @@
                             </div>
                         {% endif %}
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
+                        <!-- Passwords -->
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
                                 <div class="form-floating">
                                     {{ form.password1 }}
                                     <label for="{{ form.password1.id_for_label }}">Password</label>
@@ -114,25 +120,26 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <div class="form-floating">
                                     {{ form.password2 }}
                                     <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
-                                     {% if form.password2.errors %}
+                                    {% if form.password2.errors %}
                                         <div class="text-danger small mt-1">{{ form.password2.errors|striptags }}</div>
                                     {% endif %}
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Submit -->
                         <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-success btn-register">
+                            <button type="submit" class="btn btn-success btn-lg rounded-3 shadow-sm">
                                 <i class="fas fa-user-plus"></i> Register
                             </button>
                         </div>
                     </form>
                 </div>
-                <div class="card-footer text-center bg-light py-3">
+                <div class="card-footer text-center bg-light rounded-bottom-4 py-3">
                     <p class="mb-0">Already have an account? <a href="{% url 'users:login' %}">Login here</a></p>
                 </div>
             </div>
