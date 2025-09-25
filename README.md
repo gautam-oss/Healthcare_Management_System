@@ -13,7 +13,6 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ### Doctor Interface
 ![Alt text](https://i.ibb.co/84PgLS3C/Screenshot-2025-09-24-021927.png)
 
-
 ### My Appointments
 ![Alt text](https://i.ibb.co/qM53R2DD/Screenshot-2025-09-24-023006.png)
 
