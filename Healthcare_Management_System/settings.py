@@ -102,7 +102,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.User"
 
 # Gemini API
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
 
 # Redirects
 LOGIN_REDIRECT_URL = "users:dashboard"

@@ -17,7 +17,7 @@ def get_gemini_response(user_message, conversation_history=None):
     """
     try:
         # Create the model - using gemini-1.5-flash for better performance
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         
         # Create healthcare context
         healthcare_context = """
@@ -118,7 +118,7 @@ def validate_api_key():
             return False, "GEMINI_API_KEY not found in settings"
         
         # Try a simple API call to validate the key
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content("Hello", 
             generation_config=genai.types.GenerationConfig(max_output_tokens=10))
         
