@@ -1,0 +1,120 @@
+<!-- insurance/templates/insurance/predict.html -->
+{% extends 'base.html' %}
+{% block title %}Insurance Cost Prediction - Healthcare Management System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12 text-center mb-4">
+            <h2><i class="fas fa-calculator"></i> Insurance Cost Predictor</h2>
+            <p class="text-muted">Get an estimate of your health insurance costs using AI/ML</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-file-medical"></i> Enter Your Information</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <!-- Age -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-birthday-cake text-primary"></i> Age
+                                </label>
+                                {{ form.age }}
+                                {% if form.age.errors %}
+                                    <div class="text-danger small">{{ form.age.errors }}</div>
+                                {% endif %}
+                                <small class="text-muted d-block">{{ form.age.help_text }}</small>
+                            </div>
+
+                            <!-- Sex -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-venus-mars text-primary"></i> Sex
+                                </label>
+                                {{ form.sex }}
+                                {% if form.sex.errors %}
+                                    <div class="text-danger small">{{ form.sex.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- BMI -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-weight text-primary"></i> BMI (Body Mass Index)
+                                </label>
+                                {{ form.bmi }}
+                                {% if form.bmi.errors %}
+                                    <div class="text-danger small">{{ form.bmi.errors }}</div>
+                                {% endif %}
+                                <small class="text-muted d-block">{{ form.bmi.help_text }}</small>
+                            </div>
+
+                            <!-- Children -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-child text-primary"></i> Number of Children
+                                </label>
+                                {{ form.children }}
+                                {% if form.children.errors %}
+                                    <div class="text-danger small">{{ form.children.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Smoker -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-smoking text-danger"></i> Smoker Status
+                                </label>
+                                {{ form.smoker }}
+                                {% if form.smoker.errors %}
+                                    <div class="text-danger small">{{ form.smoker.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Region -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-map-marker-alt text-primary"></i> Region
+                                </label>
+                                {{ form.region }}
+                                {% if form.region.errors %}
+                                    <div class="text-danger small">{{ form.region.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-magic"></i> Predict Insurance Cost
+                            </button>
+                            <a href="{% url 'insurance:history' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-history"></i> View History
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Card -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5><i class="fas fa-info-circle text-info"></i> How it Works</h5>
+                    <p class="mb-0">Our AI-powered model analyzes your health and demographic information to predict your annual insurance costs. This prediction is based on machine learning algorithms trained on real insurance data.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
