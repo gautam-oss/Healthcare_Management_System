@@ -21,7 +21,7 @@
                             <div class="card bg-light">
                                 <div class="card-body">
                                     <h6 class="text-muted">Monthly Cost</h6>
-                                    <h4 class="text-primary">${{ prediction.predicted_cost|floatformat:2|add:"0"|floatformat:0|slice:":-2"|add:".00"|floatformat:2|mul:"0.0833"|floatformat:2 }}</h4>
+                                    <h4 class="text-primary">${{ prediction.predicted_cost|floatformat:2|add:"0"|slice:":-2"|floatformat:2 }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +91,7 @@
             </div>
             {% endif %}
 
-            <!-- Feature Importance -->
+            <!-- Feature Importance - FIXED -->
             <div class="card shadow mb-4">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0"><i class="fas fa-chart-bar"></i> What Affects Your Cost?</h5>
@@ -104,9 +104,17 @@
                             <span class="text-muted">{{ importance|floatformat:0 }}</span>
                         </div>
                         <div class="progress" style="height: 25px;">
-                            <div class="progress-bar bg-primary" role="progressbar" 
-                                 style="width: {% widthratio importance 25000 100 %}%">
-                            </div>
+                            {% if importance > 20000 %}
+                                <div class="progress-bar bg-danger" style="width: 100%"></div>
+                            {% elif importance > 10000 %}
+                                <div class="progress-bar bg-warning" style="width: 80%"></div>
+                            {% elif importance > 5000 %}
+                                <div class="progress-bar bg-info" style="width: 60%"></div>
+                            {% elif importance > 2000 %}
+                                <div class="progress-bar bg-primary" style="width: 40%"></div>
+                            {% else %}
+                                <div class="progress-bar bg-success" style="width: 20%"></div>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}

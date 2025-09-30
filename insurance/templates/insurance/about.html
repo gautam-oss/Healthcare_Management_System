@@ -13,7 +13,7 @@
                     <h5 class="mb-3">How It Works</h5>
                     <p>Our Insurance Cost Predictor uses a Machine Learning model based on Linear Regression to estimate annual health insurance costs. The model analyzes various factors that insurance companies typically consider when determining premiums.</p>
 
-                    <h5 class="mt-4 mb-3">Features Analyzed</h5>
+                    <h5 class="mt-4 mb-3">Features Analyzed - FIXED</h5>
                     <div class="row">
                         {% for feature, importance in feature_importance.items %}
                         <div class="col-md-6 mb-3">
@@ -21,9 +21,17 @@
                                 <div class="card-body">
                                     <h6>{{ feature }}</h6>
                                     <div class="progress" style="height: 20px;">
-                                        <div class="progress-bar bg-success" role="progressbar" 
-                                             style="width: {% widthratio importance 25000 100 %}%">
-                                        </div>
+                                        {% if importance > 20000 %}
+                                            <div class="progress-bar bg-danger" style="width: 100%"></div>
+                                        {% elif importance > 10000 %}
+                                            <div class="progress-bar bg-warning" style="width: 80%"></div>
+                                        {% elif importance > 5000 %}
+                                            <div class="progress-bar bg-info" style="width: 60%"></div>
+                                        {% elif importance > 2000 %}
+                                            <div class="progress-bar bg-primary" style="width: 40%"></div>
+                                        {% else %}
+                                            <div class="progress-bar bg-success" style="width: 20%"></div>
+                                        {% endif %}
                                     </div>
                                     <small class="text-muted">Impact Score: {{ importance|floatformat:0 }}</small>
                                 </div>
