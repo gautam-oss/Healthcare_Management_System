@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% block title %}About ML Model - Healthcare Management System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h2 class="text-center mb-4"><i class="fas fa-brain"></i> About Our ML Model</h2>
+            
+            <!-- Model Overview -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Model Overview</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Linear Regression Model</h6>
+                    <p>Our insurance cost prediction model uses a Linear Regression algorithm trained on historical healthcare insurance data. The model analyzes multiple factors to estimate annual insurance costs.</p>
+                    
+                    <h6 class="mt-4">Key Features:</h6>
+                    <ul>
+                        <li><strong>Age:</strong> Older individuals typically have higher insurance costs</li>
+                        <li><strong>BMI (Body Mass Index):</strong> Higher BMI correlates with increased health risks</li>
+                        <li><strong>Smoking Status:</strong> Smokers face significantly higher insurance costs</li>
+                        <li><strong>Number of Children:</strong> Family size affects insurance premiums</li>
+                        <li><strong>Geographic Region:</strong> Healthcare costs vary by location</li>
+                        <li><strong>Sex:</strong> Biological sex can influence insurance pricing</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Feature Importance -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Feature Importance</h5>
+                </div>
+                <div class="card-body">
+                    <p>The following chart shows how much each factor contributes to the prediction:</p>
+                    
+                    {% for feature, importance in feature_importance.items %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span><strong>{{ forloop.counter }}. {{ feature }}</strong></span>
+                                <span class="badge bg-primary">Impact: {{ importance|floatformat:0 }}</span>
+                            </div>
+                            {% widthratio importance 250 1 as progress_width %}
+                            <div class="progress" style="height: 30px;">
+                                <div class="progress-bar 
+                                    {% if forloop.counter == 1 %}bg-danger
+                                    {% elif forloop.counter == 2 %}bg-warning
+                                    {% elif forloop.counter == 3 %}bg-info
+                                    {% else %}bg-secondary{% endif %}" 
+                                     role="progressbar" 
+                                     style="width: {% if progress_width > 100 %}100{% else %}{{ progress_width }}{% endif %}%">
+                                    {{ feature }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- How It Works -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-cogs"></i> How It Works</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="p-3">
+                                <i class="fas fa-edit fa-3x text-primary mb-2"></i>
+                                <h6>1. Input Data</h6>
+                                <p class="small text-muted">You provide your health and demographic information</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="p-3">
+                                <i class="fas fa-brain fa-3x text-success mb-2"></i>
+                                <h6>2. Processing</h6>
+                                <p class="small text-muted">ML model analyzes your data using trained algorithms</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="p-3">
+                                <i class="fas fa-calculator fa-3x text-warning mb-2"></i>
+                                <h6>3. Prediction</h6>
+                                <p class="small text-muted">Model calculates estimated insurance cost</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="p-3">
+                                <i class="fas fa-chart-line fa-3x text-info mb-2"></i>
+                                <h6>4. Results</h6>
+                                <p class="small text-muted">You receive detailed cost breakdown and insights</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Model Accuracy -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-bullseye"></i> Model Performance</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="p-3">
+                                <h3 class="text-primary">Linear Regression</h3>
+                                <p class="text-muted">Algorithm Type</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3">
+                                <h3 class="text-success">6 Features</h3>
+                                <p class="text-muted">Input Variables</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3">
+                                <h3 class="text-info">Instant</h3>
+                                <p class="text-muted">Prediction Speed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Important Notes -->
+            <div class="alert alert-info">
+                <h6><i class="fas fa-lightbulb"></i> Important Notes:</h6>
+                <ul class="mb-0">
+                    <li>This model provides estimates based on statistical analysis and historical data</li>
+                    <li>Actual insurance costs may vary based on provider, plan type, and additional factors</li>
+                    <li>Results should be used for informational purposes only</li>
+                    <li>Always consult with insurance providers for accurate quotes</li>
+                </ul>
+            </div>
+            
+            <!-- Actions -->
+            <div class="text-center mt-4 mb-4">
+                <a href="{% url 'insurance:predict' %}" class="btn btn-primary btn-lg me-2">
+                    <i class="fas fa-calculator"></i> Try the Predictor
+                </a>
+                <a href="{% url 'users:dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-home"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
