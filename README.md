@@ -23,9 +23,6 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ### Patient Dashboard
 ![Alt text](https://i.ibb.co/LDJnHzVn/Screenshot-2025-09-24-024346.png)
 
-### Appointment Booking
-![Alt text](https://i.ibb.co/PvYh62zs/Screenshot-2025-09-24-022528.png)
-
 ### AI Chat Interface
 ![Alt text](https://i.ibb.co/dsvNBLC0/Screenshot-2025-09-24-022925.png)
 
