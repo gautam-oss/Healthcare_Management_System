@@ -16,42 +16,6 @@ def chat_page(request):
         return redirect('users:dashboard')
     return render(request, 'chatbot/chat.html')
 
-@login_required
-@require_http_methods(["GET"])
-def chat_history(request):
-    """Get chat history as JSON"""
-    if request.user.user_type != 'patient':
-        return JsonResponse({'success': False, 'error': 'Only patients can access the chat history.'})
-    try:
-        # Get or create conversation for this user
-        conversation, created = Conversation.objects.get_or_create(
-            user=request.user,
-            defaults={'user': request.user}
-        )
-        
-        # Get recent messages (last 20 to avoid overloading)
-        messages = conversation.messages.all()[:20]
-        
-        # Convert to JSON-serializable format
-        messages_data = []
-        for msg in messages:
-            messages_data.append({
-                'content': msg.content,
-                'is_from_user': msg.is_from_user,
-                'created_at': msg.created_at.isoformat(),
-            })
-        
-        return JsonResponse({
-            'success': True,
-            'messages': messages_data
-        })
-        
-    except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        })
-
 @csrf_exempt
 @login_required
 @require_http_methods(["POST"])
@@ -114,18 +78,3 @@ def send_message(request):
             'error': 'Something went wrong. Please try again.',
             'debug': str(e) if request.user.is_superuser else None
         }, status=500)
-
-@login_required
-@require_http_methods(["POST"])
-def clear_chat(request):
-    """Clear chat history for the current user"""
-    if request.user.user_type != 'patient':
-        return JsonResponse({'success': False, 'error': 'Only patients can clear the chat history.'})
-    try:
-        conversation = Conversation.objects.filter(user=request.user).first()
-        if conversation:
-            conversation.messages.all().delete()
-            
-        return JsonResponse({'success': True, 'message': 'Chat history cleared'})
-    except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
