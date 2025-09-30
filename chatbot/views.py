@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -6,16 +6,22 @@ from django.views.decorators.http import require_http_methods
 import json
 from .models import Conversation, Message
 from .services import get_gemini_response
+from django.contrib import messages
 
 @login_required
 def chat_page(request):
     """Main chat page - don't load messages here"""
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can access the chatbot.')
+        return redirect('users:dashboard')
     return render(request, 'chatbot/chat.html')
 
 @login_required
 @require_http_methods(["GET"])
 def chat_history(request):
     """Get chat history as JSON"""
+    if request.user.user_type != 'patient':
+        return JsonResponse({'success': False, 'error': 'Only patients can access the chat history.'})
     try:
         # Get or create conversation for this user
         conversation, created = Conversation.objects.get_or_create(
@@ -51,6 +57,8 @@ def chat_history(request):
 @require_http_methods(["POST"])
 def send_message(request):
     """Handle chat messages via AJAX"""
+    if request.user.user_type != 'patient':
+        return JsonResponse({'error': 'Only patients can send messages.'}, status=403)
     try:
         data = json.loads(request.body)
         user_message = data.get('message', '').strip()
@@ -111,6 +119,8 @@ def send_message(request):
 @require_http_methods(["POST"])
 def clear_chat(request):
     """Clear chat history for the current user"""
+    if request.user.user_type != 'patient':
+        return JsonResponse({'success': False, 'error': 'Only patients can clear the chat history.'})
     try:
         conversation = Conversation.objects.filter(user=request.user).first()
         if conversation:

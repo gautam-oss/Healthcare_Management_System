@@ -10,6 +10,9 @@ from .ml_model import predictor
 @login_required
 def predict_insurance(request):
     """Insurance cost prediction view"""
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can access the insurance predictor.')
+        return redirect('users:dashboard')
     if request.method == 'POST':
         form = InsurancePredictionForm(request.POST)
         if form.is_valid():
@@ -44,6 +47,9 @@ def predict_insurance(request):
 @login_required
 def prediction_result(request, prediction_id):
     """Display prediction result"""
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can view prediction results.')
+        return redirect('users:dashboard')
     try:
         prediction = InsurancePrediction.objects.get(id=prediction_id, user=request.user)
         
@@ -94,6 +100,9 @@ def prediction_result(request, prediction_id):
 @login_required
 def prediction_history(request):
     """View prediction history"""
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can view prediction history.')
+        return redirect('users:dashboard')
     predictions = InsurancePrediction.objects.filter(user=request.user)
     
     # Calculate statistics
@@ -116,6 +125,9 @@ def prediction_history(request):
 @login_required
 def about_model(request):
     """Information about the ML model"""
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can view model information.')
+        return redirect('users:dashboard')
     feature_importance = predictor.get_feature_importance()
     
     context = {
