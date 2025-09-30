@@ -1,12 +1,13 @@
 # 🏥 Healthcare Management System
 
-A comprehensive full-stack healthcare platform that connects patients and doctors, featuring appointment booking, AI-powered health assistance, and streamlined healthcare management. Built with Django and powered by Google's Gemini AI. Currently deployed temporarily on Render 🚀
+A comprehensive full-stack healthcare platform that connects patients and doctors, featuring appointment booking, AI-powered health assistance, ML-based insurance cost prediction, and streamlined healthcare management. Built with Django and powered by Google's Gemini AI. Currently deployed temporarily on Render 🚀
 
 ![Django](https://img.shields.io/badge/Django-5.2.6-green)
 ![Python](https://img.shields.io/badge/Python-3.11+-blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+![Machine Learning](https://img.shields.io/badge/ML-Insurance_Prediction-orange)
 
 ## 📱 Screenshots
 
@@ -28,7 +29,6 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ### AI Chat Interface
 ![Alt text](https://i.ibb.co/dsvNBLC0/Screenshot-2025-09-24-022925.png)
 
-
 ## ✨ Features
 
 ### 👥 **User Management**
@@ -48,6 +48,15 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 - **Symptom Guidance**: AI assistance for understanding symptoms (not a replacement for medical advice)
 - **Conversation History**: Persistent chat history for continued conversations
 
+### 💰 **ML-Based Insurance Cost Predictor**
+- **Linear Regression Model**: Trained machine learning model for accurate cost predictions
+- **Multiple Factors Analysis**: Considers age, sex, BMI, children, smoking status, and region
+- **Risk Assessment**: Identifies key risk factors and provides personalized recommendations
+- **Feature Importance Visualization**: Understand which factors most impact insurance costs
+- **Prediction History**: Track and compare multiple predictions over time
+- **Cost Statistics**: View average, minimum, and maximum predicted costs
+- **Interactive Dashboard**: Beautiful UI with charts and progress bars
+
 ### 🎨 **Modern UI/UX**
 - **Responsive Design**: Bootstrap 5 for mobile-first design
 - **Interactive Elements**: Real-time chat interface with typing indicators
@@ -60,6 +69,7 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 - **Django 5.2.6**: Web framework
 - **PostgreSQL**: Primary database
 - **Google Gemini AI**: Conversational AI service
+- **Scikit-learn**: Machine learning model (Linear Regression)
 - **Django REST Framework**: API development (ready for extension)
 
 ### **Frontend**
@@ -67,6 +77,11 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 - **Bootstrap 5**: Responsive UI framework
 - **JavaScript (ES6+)**: Interactive functionality
 - **Font Awesome**: Icon library
+
+### **Machine Learning**
+- **Linear Regression**: Insurance cost prediction model
+- **NumPy**: Numerical computations
+- **Pickle**: Model serialization
 
 ### **DevOps & Deployment**
 - **Docker & Docker Compose**: Containerization
@@ -105,6 +120,18 @@ Healthcare_Management_System/
 │   ├── views.py                      # Chat API views
 │   ├── services.py                   # Gemini AI integration
 │   └── templates/chatbot/            # Chat interface
+├── insurance/                        # Insurance prediction app (NEW)
+│   ├── models.py                     # InsurancePrediction model
+│   ├── views.py                      # Prediction views
+│   ├── forms.py                      # Prediction forms
+│   ├── ml_model.py                   # Linear Regression model
+│   ├── trained_model.pkl             # Serialized ML model
+│   ├── admin.py                      # Admin configuration
+│   └── templates/insurance/          # Insurance templates
+│       ├── predict.html              # Prediction form
+│       ├── result.html               # Prediction results
+│       ├── history.html              # Prediction history
+│       └── about.html                # Model information
 ├── static/                           # Static files
 │   ├── css/
 │   └── js/
@@ -130,7 +157,7 @@ Healthcare_Management_System/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/Healthcare-Management-System.git
+   git clone https://github.com/gautam-oss/Healthcare-Management-System.git
    cd Healthcare-Management-System
    ```
 
@@ -177,7 +204,7 @@ Healthcare_Management_System/
 
 1. **Clone and navigate to project**
    ```bash
-   git clone https://github.com/yourusername/Healthcare-Management-System.git
+   git clone https://github.com/gautam-oss/Healthcare-Management-System.git
    cd Healthcare-Management-System
    ```
 
@@ -261,7 +288,12 @@ For production deployment, ensure:
    - Ask health-related questions
    - Get symptom guidance
    - Receive medication information
-5. **Manage Appointments**: View and track appointment status
+5. **Insurance Cost Prediction**:
+   - Enter personal health information (age, BMI, smoking status, etc.)
+   - Get instant ML-powered cost predictions
+   - View risk factors and recommendations
+   - Track prediction history with statistics
+6. **Manage Appointments**: View and track appointment status
 
 ### For Doctors
 
@@ -273,15 +305,15 @@ For production deployment, ensure:
    - Add clinical notes
    - Update appointment status
 4. **AI Assistant**: Use AI for patient education and information
+5. **Insurance Insights**: Access insurance prediction tool for patient cost estimates
 
 ### Admin Features
 
 - User management (patients and doctors)
 - Appointment oversight and management
+- Insurance prediction history and analytics
 - System configuration and monitoring
 - AI conversation logs and analytics
-
-
 
 ## 🔧 API Documentation
 
@@ -300,6 +332,13 @@ For production deployment, ensure:
 - `GET /chatbot/` - Chat interface
 - `POST /chatbot/send/` - Send message to AI
 
+### Insurance Endpoints
+- `GET /insurance/predict/` - Insurance prediction form
+- `POST /insurance/predict/` - Submit prediction data
+- `GET /insurance/result/<id>/` - View prediction result
+- `GET /insurance/history/` - View prediction history
+- `GET /insurance/about/` - Model information and feature importance
+
 ## 🧪 Testing
 
 Run the test suite:
@@ -311,11 +350,38 @@ python manage.py test
 python manage.py test users
 python manage.py test appointments
 python manage.py test chatbot
+python manage.py test insurance
 
 # Run with coverage
 coverage run --source='.' manage.py test
 coverage report
 ```
+
+## 🤖 Machine Learning Model Details
+
+### Insurance Cost Predictor
+
+**Model Type**: Linear Regression
+
+**Features Analyzed**:
+1. **Smoking Status** (Highest Impact): Smokers pay significantly higher premiums
+2. **BMI**: Higher BMI correlates with increased costs
+3. **Age**: Older individuals typically have higher insurance costs
+4. **Number of Children**: More dependents increase coverage costs
+5. **Region**: Geographic location affects pricing
+6. **Sex**: Minor impact on insurance costs
+
+**Model Performance**:
+- Pre-trained coefficients based on industry-standard insurance datasets
+- Accurate predictions for annual health insurance costs
+- Feature importance visualization for transparency
+- Risk factor identification and personalized recommendations
+
+**Technical Implementation**:
+- Pickle serialization for model persistence
+- NumPy for efficient numerical computations
+- Real-time prediction with minimal latency
+- Extensible architecture for model updates
 
 ## 🔒 Security Features
 
@@ -325,6 +391,7 @@ coverage report
 - **Secure Password Hashing**: Django's PBKDF2 algorithm
 - **Session Security**: Secure session management
 - **Input Validation**: Form validation and sanitization
+- **User Data Privacy**: Prediction history tied to authenticated users
 
 ## 📈 Performance Optimization
 
@@ -332,6 +399,7 @@ coverage report
 - **Static File Compression**: Gzip compression for static files
 - **Caching**: Redis caching for frequently accessed data (ready for implementation)
 - **Database Connection Pooling**: Persistent database connections
+- **ML Model Caching**: Pre-loaded model for instant predictions
 
 ## 🚀 Deployment Options
 
@@ -365,6 +433,7 @@ Before deploying to production:
 - [ ] Configure error tracking (Sentry recommended)
 - [ ] Set up CI/CD pipeline
 - [ ] Performance testing completed
+- [ ] ML model validation and testing
 
 ## 🤝 Contributing
 
@@ -382,6 +451,7 @@ We welcome contributions! Please follow these steps:
 - Write comprehensive tests
 - Update documentation
 - Use meaningful commit messages
+- Test ML model predictions thoroughly
 
 ## 🐛 Issue Reporting
 
@@ -404,6 +474,7 @@ For support and questions:
 ## 🗺️ Roadmap
 
 ### Upcoming Features
+- [x] **Insurance Cost Prediction**: ML-based insurance cost estimator ✅
 - [ ] **Mobile App**: React Native mobile application
 - [ ] **Video Consultations**: Integrated video calling
 - [ ] **Payment Integration**: Stripe/PayPal payment processing
@@ -414,11 +485,13 @@ For support and questions:
 - [ ] **API v2**: RESTful API for third-party integrations
 
 ### Future Enhancements
-- Machine Learning diagnosis assistance
+- Enhanced ML models (Neural Networks, XGBoost)
+- Disease prediction using ML
+- Medication interaction checker
 - Wearable device integration
 - Telemedicine platform expansion
 - Healthcare data analytics
-- Insurance integration
+- Real-time insurance quote comparison
 
 ## 📄 License
 
@@ -443,6 +516,8 @@ copies of the Software...
 - **Bootstrap Team**: For the responsive UI framework
 - **PostgreSQL**: For the robust database system
 - **Font Awesome**: For the beautiful icons
+- **Scikit-learn**: For machine learning capabilities
+- **NumPy**: For numerical computing support
 
 ---
 
@@ -469,12 +544,12 @@ python manage.py runserver
 docker-compose up --build
 ```
 
-**🎉 You're ready to revolutionize healthcare management!**
+**🎉 You're ready to revolutionize healthcare management with AI and ML!**
 
 ---
 
 <p align="center">
-  Made with ❤️ by <a href="https://github.com/yourusername">Gautam Kumar</a>
+  Made with ❤️ by <a href="https://github.com/gautam-oss">Gautam Kumar</a>
 </p>
 
 <p align="center">
