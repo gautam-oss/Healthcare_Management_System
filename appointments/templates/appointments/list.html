@@ -1,242 +1,210 @@
 {% extends 'base.html' %}
-{% block title %}Insurance Cost Prediction - Healthcare Management System{% endblock %}
+{% block title %}My Appointments - Healthcare Management System{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <!-- Page Header -->
-    <div class="row mb-4">
-        <div class="col-12 text-center fade-in">
-            <h2 class="text-gradient mb-2">
-                <i class="fas fa-calculator me-2"></i>
-                AI Insurance Cost Predictor
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="mb-1">
+                <i class="fas fa-calendar-check text-primary me-2"></i>
+                My Appointments
             </h2>
-            <p class="text-white-50">Get instant ML-powered insurance cost estimates based on your health profile</p>
+            <p class="text-muted mb-0">
+                {% if user.user_type == 'patient' %}
+                    Manage and track your medical appointments
+                {% else %}
+                    Manage your patient consultations
+                {% endif %}
+            </p>
         </div>
+        {% if user.user_type == 'patient' %}
+            <a href="{% url 'appointments:book' %}" class="btn btn-success shadow-sm">
+                <i class="fas fa-calendar-plus me-2"></i>
+                Book New Appointment
+            </a>
+        {% endif %}
     </div>
-
-    <div class="row justify-content-center">
-        <div class="col-xl-10">
-            <!-- Main Form Card -->
-            <div class="card shadow-custom border-0 fade-in">
-                <div class="card-header text-white border-0" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">
-                    <h4 class="mb-1">
-                        <i class="fas fa-file-medical me-2"></i>
-                        Your Health Information
-                    </h4>
-                    <p class="mb-0 small opacity-90">All information is kept confidential and secure</p>
+    
+    {% if appointments %}
+        <!-- Filter/Stats Bar -->
+        <div class="row mb-4 g-3">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white;">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clock fa-2x mb-2"></i>
+                        <h3 class="mb-0">{{ appointments|length }}</h3>
+                        <small>Total Appointments</small>
+                    </div>
                 </div>
-                <div class="card-body p-4">
-                    <form method="post">
-                        {% csrf_token %}
-                        
-                        <!-- Personal Information Section -->
-                        <h5 class="mb-3 pb-2 border-bottom">
-                            <i class="fas fa-user text-primary me-2"></i>
-                            Personal Information
-                        </h5>
-                        
-                        <div class="row g-3 mb-4">
-                            <!-- Age -->
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-birthday-cake text-primary me-2"></i>
-                                    Age (years)
-                                </label>
-                                {{ form.age }}
-                                {% if form.age.errors %}
-                                    <div class="text-danger small mt-1">{{ form.age.errors }}</div>
-                                {% endif %}
-                                <small class="text-muted d-block mt-1">{{ form.age.help_text }}</small>
-                            </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #10B981, #059669); color: white;">
+                    <div class="card-body text-center">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i>
+                        <h3 class="mb-0">0</h3>
+                        <small>Confirmed</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: white;">
+                    <div class="card-body text-center">
+                        <i class="fas fa-hourglass-half fa-2x mb-2"></i>
+                        <h3 class="mb-0">0</h3>
+                        <small>Pending</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white;">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clipboard-check fa-2x mb-2"></i>
+                        <h3 class="mb-0">0</h3>
+                        <small>Completed</small>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                            <!-- Sex -->
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-venus-mars text-primary me-2"></i>
-                                    Sex
-                                </label>
-                                {{ form.sex }}
-                                {% if form.sex.errors %}
-                                    <div class="text-danger small mt-1">{{ form.sex.errors }}</div>
+        <!-- Appointments Grid -->
+        <div class="row g-4">
+            {% for appointment in appointments %}
+                <div class="col-lg-6 fade-in">
+                    <div class="card border-0 shadow-custom h-100">
+                        <!-- Status Header -->
+                        <div class="card-header border-0 text-white
+                            {% if appointment.status == 'confirmed' %}
+                                bg-gradient-success
+                            {% elif appointment.status == 'pending' %}
+                                bg-gradient-primary
+                            {% elif appointment.status == 'completed' %}
+                                bg-gradient-info
+                            {% else %}
+                                bg-gradient-danger
+                            {% endif %}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-calendar-alt me-2"></i>
+                                    <strong>{{ appointment.appointment_date|date:"M d, Y" }}</strong>
+                                </div>
+                                <span class="badge 
+                                    {% if appointment.status == 'confirmed' %}bg-white text-success
+                                    {% elif appointment.status == 'pending' %}bg-white text-primary
+                                    {% elif appointment.status == 'completed' %}bg-white text-info
+                                    {% else %}bg-white text-danger
+                                    {% endif %} px-3 py-2">
+                                    {{ appointment.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Appointment Details -->
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <h5 class="mb-3">
+                                    <i class="fas 
+                                        {% if user.user_type == 'patient' %}fa-user-md
+                                        {% else %}fa-user
+                                        {% endif %} text-primary me-2"></i>
+                                    {% if user.user_type == 'patient' %}
+                                        Dr. {{ appointment.doctor.user.get_full_name }}
+                                    {% else %}
+                                        {{ appointment.patient.user.get_full_name }}
+                                    {% endif %}
+                                </h5>
+                                
+                                {% if user.user_type == 'patient' %}
+                                    <p class="text-muted small mb-2">
+                                        <i class="fas fa-stethoscope me-2"></i>
+                                        {{ appointment.doctor.specialization }}
+                                    </p>
                                 {% endif %}
                             </div>
                             
-                            <!-- Children -->
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-child text-primary me-2"></i>
-                                    Number of Children
-                                </label>
-                                {{ form.children }}
-                                {% if form.children.errors %}
-                                    <div class="text-danger small mt-1">{{ form.children.errors }}</div>
+                            <div class="appointment-info">
+                                <div class="d-flex align-items-center mb-2 pb-2 border-bottom">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    <span class="fw-bold">{{ appointment.appointment_time }}</span>
+                                </div>
+                                
+                                <div class="mb-3 pb-3 border-bottom">
+                                    <small class="text-muted d-block mb-1">
+                                        <i class="fas fa-notes-medical me-1"></i> Reason:
+                                    </small>
+                                    <p class="mb-0">{{ appointment.reason|truncatewords:20 }}</p>
+                                </div>
+                                
+                                {% if appointment.notes %}
+                                    <div class="alert alert-info mb-3">
+                                        <small class="text-muted d-block mb-1">
+                                            <i class="fas fa-comment-medical me-1"></i> Doctor's Notes:
+                                        </small>
+                                        <p class="mb-0 small">{{ appointment.notes|truncatewords:15 }}</p>
+                                    </div>
                                 {% endif %}
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="far fa-clock me-1"></i>
+                                        Booked {{ appointment.created_at|timesince }} ago
+                                    </small>
+                                    
+                                    {% if user.user_type == 'doctor' %}
+                                        <a href="{% url 'appointments:update' appointment.id %}" 
+                                           class="btn btn-sm btn-primary">
+                                            <i class="fas fa-edit me-1"></i>
+                                            Manage
+                                        </a>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Health Metrics Section -->
-                        <h5 class="mb-3 pb-2 border-bottom">
-                            <i class="fas fa-heartbeat text-danger me-2"></i>
-                            Health Metrics
-                        </h5>
                         
-                        <div class="row g-3 mb-4">
-                            <!-- BMI -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-weight text-primary me-2"></i>
-                                    BMI (Body Mass Index)
-                                </label>
-                                {{ form.bmi }}
-                                {% if form.bmi.errors %}
-                                    <div class="text-danger small mt-1">{{ form.bmi.errors }}</div>
-                                {% endif %}
-                                <small class="text-muted d-block mt-1">{{ form.bmi.help_text }}</small>
-                                <a href="#" class="small text-decoration-none" data-bs-toggle="modal" data-bs-target="#bmiCalculator">
-                                    <i class="fas fa-calculator me-1"></i>Calculate BMI
-                                </a>
-                            </div>
-
-                            <!-- Smoker -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-smoking text-danger me-2"></i>
-                                    Smoker Status
-                                </label>
-                                {{ form.smoker }}
-                                {% if form.smoker.errors %}
-                                    <div class="text-danger small mt-1">{{ form.smoker.errors }}</div>
-                                {% endif %}
-                                <small class="text-muted d-block mt-1">
-                                    <i class="fas fa-exclamation-triangle me-1"></i>
-                                    Smoking significantly affects insurance costs
-                                </small>
-                            </div>
-                        </div>
-
-                        <!-- Location Section -->
-                        <h5 class="mb-3 pb-2 border-bottom">
-                            <i class="fas fa-map-marker-alt text-success me-2"></i>
-                            Location
-                        </h5>
-                        
-                        <div class="row g-3 mb-4">
-                            <!-- Region -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-globe text-primary me-2"></i>
-                                    Region
-                                </label>
-                                {{ form.region }}
-                                {% if form.region.errors %}
-                                    <div class="text-danger small mt-1">{{ form.region.errors }}</div>
+                        <!-- Quick Actions Footer -->
+                        <div class="card-footer bg-light border-0">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-primary flex-fill">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Details
+                                </button>
+                                {% if user.user_type == 'patient' and appointment.status == 'pending' %}
+                                    <button class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-times me-1"></i>
+                                        Cancel
+                                    </button>
                                 {% endif %}
                             </div>
                         </div>
-
-                        <!-- Information Alert -->
-                        <div class="alert alert-info d-flex align-items-start mb-4">
-                            <i class="fas fa-brain fa-lg me-3 mt-1"></i>
-                            <div>
-                                <strong>About Our Predictor:</strong>
-                                <p class="mb-0 mt-2">
-                                    Our ML model analyzes multiple factors including age, BMI, smoking status, and location 
-                                    to provide accurate annual insurance cost estimates. The prediction is based on 
-                                    industry-standard datasets and Linear Regression algorithms.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-lg" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white;">
-                                <i class="fas fa-magic me-2"></i>
-                                Predict Insurance Cost
-                            </button>
-                            <a href="{% url 'insurance:history' %}" class="btn btn-outline-secondary btn-lg">
-                                <i class="fas fa-history me-2"></i>
-                                View Prediction History
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Feature Cards -->
-            <div class="row mt-4 g-3">
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100 text-center p-4" style="background: rgba(255, 255, 255, 0.95);">
-                        <i class="fas fa-chart-line fa-3x mb-3" style="color: #8B5CF6;"></i>
-                        <h6>Accurate Predictions</h6>
-                        <p class="small text-muted mb-0">ML-powered cost estimates</p>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100 text-center p-4" style="background: rgba(255, 255, 255, 0.95);">
-                        <i class="fas fa-lock fa-3x text-success mb-3"></i>
-                        <h6>100% Secure</h6>
-                        <p class="small text-muted mb-0">Your data is encrypted</p>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-custom text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-calendar-times fa-5x text-muted opacity-25"></i>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100 text-center p-4" style="background: rgba(255, 255, 255, 0.95);">
-                        <i class="fas fa-bolt fa-3x text-warning mb-3"></i>
-                        <h6>Instant Results</h6>
-                        <p class="small text-muted mb-0">Get predictions immediately</p>
-                    </div>
+                    <h4 class="mb-3">No Appointments Found</h4>
+                    <p class="text-muted mb-4">
+                        {% if user.user_type == 'patient' %}
+                            You haven't booked any appointments yet. Start by booking your first consultation!
+                        {% else %}
+                            No patients have booked appointments with you yet.
+                        {% endif %}
+                    </p>
+                    {% if user.user_type == 'patient' %}
+                        <a href="{% url 'appointments:book' %}" class="btn btn-success btn-lg">
+                            <i class="fas fa-calendar-plus me-2"></i>
+                            Book Your First Appointment
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
-    </div>
+    {% endif %}
 </div>
-
-<!-- BMI Calculator Modal -->
-<div class="modal fade" id="bmiCalculator" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white;">
-                <h5 class="modal-title">
-                    <i class="fas fa-calculator me-2"></i>
-                    BMI Calculator
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label">Weight (kg)</label>
-                    <input type="number" class="form-control" id="weight" step="0.1" placeholder="e.g., 70">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Height (cm)</label>
-                    <input type="number" class="form-control" id="height" step="0.1" placeholder="e.g., 175">
-                </div>
-                <button class="btn btn-primary w-100" onclick="calculateBMI()">
-                    <i class="fas fa-calculator me-2"></i>Calculate
-                </button>
-                <div id="bmiResult" class="alert alert-info mt-3" style="display: none;"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-function calculateBMI() {
-    const weight = parseFloat(document.getElementById('weight').value);
-    const height = parseFloat(document.getElementById('height').value) / 100; // convert to meters
-    
-    if (weight && height) {
-        const bmi = (weight / (height * height)).toFixed(1);
-        document.getElementById('bmiResult').style.display = 'block';
-        document.getElementById('bmiResult').innerHTML = `
-            <strong>Your BMI:</strong> ${bmi}<br>
-            <button class="btn btn-sm btn-success mt-2" onclick="useBMI(${bmi})">Use this BMI</button>
-        `;
-    }
-}
-
-function useBMI(bmi) {
-    document.getElementById('id_bmi').value = bmi;
-    bootstrap.Modal.getInstance(document.getElementById('bmiCalculator')).hide();
-}
-</script>
 {% endblock %}
