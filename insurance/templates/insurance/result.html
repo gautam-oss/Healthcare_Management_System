@@ -5,6 +5,20 @@
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-lg-10">
+            <!-- Guest Warning Banner -->
+            {% if is_guest %}
+            <div class="alert alert-warning d-flex align-items-center mb-4">
+                <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                <div>
+                    <h6 class="mb-1">Guest Mode</h6>
+                    <p class="mb-0">You're viewing results as a guest. 
+                        <a href="{% url 'users:register_patient' %}" class="alert-link">Register</a> or 
+                        <a href="{% url 'users:login' %}" class="alert-link">Login</a> to save your predictions!
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+            
             <!-- Main Result Card -->
             <div class="card shadow-lg mb-4">
                 <div class="card-header bg-success text-white text-center">
@@ -12,7 +26,11 @@
                 </div>
                 <div class="card-body p-5 text-center">
                     <h1 class="display-3 text-success fw-bold mb-3">
-                        ${{ prediction.predicted_cost|floatformat:2 }}
+                        {% if is_guest %}
+                            ${{ prediction.predicted_cost|floatformat:2 }}
+                        {% else %}
+                            ${{ prediction.predicted_cost|floatformat:2 }}
+                        {% endif %}
                     </h1>
                     <p class="lead text-muted">Estimated Annual Insurance Cost</p>
                     
@@ -21,7 +39,13 @@
                             <div class="card bg-light">
                                 <div class="card-body">
                                     <h6 class="text-muted">Monthly Cost</h6>
-                                    <h4 class="text-primary">${{ prediction.predicted_cost|floatformat:2|add:"0"|slice:":-2"|floatformat:2 }}</h4>
+                                    <h4 class="text-primary">
+                                        {% if is_guest %}
+                                            ${{ prediction.predicted_cost|floatformat:2|add:"0"|slice:":0"|floatformat:0|add:12|floatformat:2 }}
+                                        {% else %}
+                                            ${% widthratio prediction.predicted_cost 12 1 %}
+                                        {% endif %}
+                                    </h4>
                                 </div>
                             </div>
                         </div>
@@ -29,7 +53,13 @@
                             <div class="card bg-light">
                                 <div class="card-body">
                                     <h6 class="text-muted">Prediction Date</h6>
-                                    <h4 class="text-primary">{{ prediction.created_at|date:"M d, Y" }}</h4>
+                                    <h4 class="text-primary">
+                                        {% if is_guest %}
+                                            Today
+                                        {% else %}
+                                            {{ prediction.created_at|date:"M d, Y" }}
+                                        {% endif %}
+                                    </h4>
                                 </div>
                             </div>
                         </div>
@@ -59,11 +89,11 @@
                         <div class="col-md-4 mb-3">
                             <strong>Smoker:</strong> 
                             <span class="badge {% if prediction.smoker == 'yes' %}bg-danger{% else %}bg-success{% endif %}">
-                                {{ prediction.get_smoker_display }}
+                                {{ prediction.smoker|upper }}
                             </span>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <strong>Region:</strong> {{ prediction.get_region_display }}
+                            <strong>Region:</strong> {{ prediction.region|title }}
                         </div>
                     </div>
                 </div>
@@ -91,7 +121,7 @@
             </div>
             {% endif %}
 
-            <!-- Feature Importance - FIXED -->
+            <!-- Feature Importance -->
             <div class="card shadow mb-4">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0"><i class="fas fa-chart-bar"></i> What Affects Your Cost?</h5>
@@ -126,11 +156,17 @@
                 <a href="{% url 'insurance:predict' %}" class="btn btn-primary btn-lg">
                     <i class="fas fa-redo"></i> New Prediction
                 </a>
-                <a href="{% url 'insurance:history' %}" class="btn btn-outline-secondary btn-lg">
-                    <i class="fas fa-history"></i> View History
-                </a>
-                <a href="{% url 'users:dashboard' %}" class="btn btn-outline-secondary btn-lg">
-                    <i class="fas fa-home"></i> Dashboard
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'insurance:history' %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-history"></i> View History
+                    </a>
+                {% else %}
+                    <a href="{% url 'users:register_patient' %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-user-plus"></i> Register to Save
+                    </a>
+                {% endif %}
+                <a href="{% url 'core:home' %}" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-home"></i> Home
                 </a>
             </div>
         </div>

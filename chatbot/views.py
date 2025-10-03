@@ -8,21 +8,34 @@ from .models import Conversation, Message
 from .services import get_gemini_response
 from django.contrib import messages
 
-@login_required
 def chat_page(request):
-    """Main chat page - don't load messages here"""
-    if request.user.user_type != 'patient':
-        messages.error(request, 'Only patients can access the chatbot.')
-        return redirect('users:dashboard')
-    return render(request, 'chatbot/chat.html')
+    """
+    Public chat page - accessible to everyone
+    Logged-in users get saved history, guests don't
+    """
+    context = {}
+    
+    # If user is logged in, load their conversation history
+    if request.user.is_authenticated:
+        try:
+            conversation = Conversation.objects.get(user=request.user)
+            context['messages'] = conversation.messages.all()[:50]  # Last 50 messages
+        except Conversation.DoesNotExist:
+            context['messages'] = []
+    else:
+        # For guests, no history
+        context['messages'] = []
+        context['is_guest'] = True
+    
+    return render(request, 'chatbot/chat.html', context)
 
 @csrf_exempt
-@login_required
 @require_http_methods(["POST"])
 def send_message(request):
-    """Handle chat messages via AJAX"""
-    if request.user.user_type != 'patient':
-        return JsonResponse({'error': 'Only patients can send messages.'}, status=403)
+    """
+    Handle chat messages via AJAX
+    Works for both logged-in users and guests
+    """
     try:
         data = json.loads(request.body)
         user_message = data.get('message', '').strip()
@@ -34,41 +47,56 @@ def send_message(request):
         if len(user_message) > 1000:
             return JsonResponse({'error': 'Message too long. Please limit to 1000 characters.'}, status=400)
         
-        # Get or create conversation
-        conversation, created = Conversation.objects.get_or_create(
-            user=request.user,
-            defaults={'user': request.user}
-        )
+        # Get conversation history for context
+        recent_messages = []
         
-        # Save user message
-        user_msg = Message.objects.create(
-            conversation=conversation,
-            content=user_message,
-            is_from_user=True
-        )
+        # Only save for logged-in users
+        if request.user.is_authenticated:
+            # Get or create conversation
+            conversation, created = Conversation.objects.get_or_create(
+                user=request.user,
+                defaults={'user': request.user}
+            )
+            
+            # Save user message
+            user_msg = Message.objects.create(
+                conversation=conversation,
+                content=user_message,
+                is_from_user=True
+            )
+            
+            # Get conversation history (last 10 messages)
+            recent_messages = conversation.messages.all()[:10]
         
-        # Get conversation history for context (last 10 messages)
-        recent_messages = conversation.messages.all()[:10]
-        
-        # Get AI response
+        # Get AI response (works for both logged-in and guest users)
         ai_response = get_gemini_response(user_message, recent_messages)
         
-        # Save AI response
-        ai_msg = Message.objects.create(
-            conversation=conversation,
-            content=ai_response,
-            is_from_user=False
-        )
-        
-        # Update conversation timestamp
-        conversation.save()  # This updates the updated_at field
-        
-        return JsonResponse({
-            'success': True,
-            'ai_response': ai_response,
-            'user_message_id': user_msg.id,
-            'ai_message_id': ai_msg.id
-        })
+        # Save AI response only for logged-in users
+        if request.user.is_authenticated:
+            ai_msg = Message.objects.create(
+                conversation=conversation,
+                content=ai_response,
+                is_from_user=False
+            )
+            
+            # Update conversation timestamp
+            conversation.save()
+            
+            return JsonResponse({
+                'success': True,
+                'ai_response': ai_response,
+                'user_message_id': user_msg.id,
+                'ai_message_id': ai_msg.id,
+                'is_authenticated': True
+            })
+        else:
+            # Guest user - no saving
+            return JsonResponse({
+                'success': True,
+                'ai_response': ai_response,
+                'is_authenticated': False,
+                'message': 'Login to save your conversation history'
+            })
         
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON format'}, status=400)

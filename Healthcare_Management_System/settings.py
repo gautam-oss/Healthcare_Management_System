@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # custom apps
+    "core",
     "users",
     "appointments",
     "chatbot",

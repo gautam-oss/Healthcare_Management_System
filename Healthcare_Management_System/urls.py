@@ -1,12 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.shortcuts import redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),
-    path('appointments/', include('appointments.urls')),
-    path('chatbot/', include('chatbot.urls')),
-    path('insurance/', include('insurance.urls')),  # ADD THIS LINE
-    path('', lambda request: redirect('users:login')),
+    path('', include('core.urls')),                    # Home page (NEW)
+    path('users/', include('users.urls')),             # User auth
+    path('appointments/', include('appointments.urls')),# Appointments
+    path('chatbot/', include('chatbot.urls')),         # Chatbot
+    path('insurance/', include('insurance.urls')),     # Insurance
 ]

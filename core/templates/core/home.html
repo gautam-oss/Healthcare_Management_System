@@ -1,0 +1,396 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Welcome to Healthcare Management System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6 text-white fade-in">
+                <h1 class="display-3 fw-bold mb-4">
+                    Your Health,<br>
+                    <span class="text-gradient-light">Our Priority</span>
+                </h1>
+                <p class="lead mb-4 opacity-90">
+                    Experience next-generation healthcare with AI-powered assistance, 
+                    easy appointment booking, and smart insurance predictions.
+                </p>
+                <div class="d-flex gap-3 flex-wrap mb-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'users:dashboard' %}" class="btn btn-light btn-lg px-4 shadow">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Go to Dashboard
+                        </a>
+                    {% else %}
+                        <a href="{% url 'users:register_patient' %}" class="btn btn-light btn-lg px-4 shadow">
+                            <i class="fas fa-user-plus me-2"></i>
+                            Get Started Free
+                        </a>
+                        <a href="{% url 'users:login' %}" class="btn btn-outline-light btn-lg px-4">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Login
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="d-flex gap-4 text-white-50 small">
+                    <div>
+                        <i class="fas fa-check-circle me-1"></i>
+                        No Credit Card Required
+                    </div>
+                    <div>
+                        <i class="fas fa-shield-alt me-1"></i>
+                        100% Secure
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center fade-in">
+                <div class="hero-illustration">
+                    <i class="fas fa-heartbeat fa-10x text-white opacity-25"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5 fade-in">
+            <h2 class="display-5 fw-bold mb-3">Powerful Features</h2>
+            <p class="lead text-muted">Everything you need for modern healthcare management</p>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Feature 1: Book Appointments -->
+            <div class="col-lg-3 col-md-6 fade-in">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-calendar-plus fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="mb-3">Book Appointments</h5>
+                    <p class="text-muted mb-3">Schedule consultations with qualified doctors instantly</p>
+                    {% if user.is_authenticated and user.user_type == 'patient' %}
+                        <a href="{% url 'appointments:book' %}" class="btn btn-outline-primary btn-sm">
+                            Book Now <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    {% else %}
+                        <span class="badge bg-light text-primary">Login Required</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Feature 2: AI Chatbot -->
+            <div class="col-lg-3 col-md-6 fade-in">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-robot fa-3x text-success"></i>
+                    </div>
+                    <h5 class="mb-3">AI Health Assistant</h5>
+                    <p class="text-muted mb-3">Get instant health advice powered by AI</p>
+                    <a href="#chatbot-demo" class="btn btn-outline-success btn-sm">
+                        Try Now <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                    <div class="mt-2">
+                        <span class="badge bg-success">Public Access</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 3: Insurance Predictor -->
+            <div class="col-lg-3 col-md-6 fade-in">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-calculator fa-3x text-warning"></i>
+                    </div>
+                    <h5 class="mb-3">Insurance Calculator</h5>
+                    <p class="text-muted mb-3">Predict your insurance costs with ML</p>
+                    <a href="#insurance-demo" class="btn btn-outline-warning btn-sm">
+                        Calculate <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                    <div class="mt-2">
+                        <span class="badge bg-warning">Public Access</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 4: Track Records -->
+            <div class="col-lg-3 col-md-6 fade-in">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-clipboard-list fa-3x text-info"></i>
+                    </div>
+                    <h5 class="mb-3">Health Records</h5>
+                    <p class="text-muted mb-3">Track appointments and predictions</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'users:dashboard' %}" class="btn btn-outline-info btn-sm">
+                            View Records <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    {% else %}
+                        <span class="badge bg-light text-info">Login Required</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Try Our Tools Section -->
+<section class="tools-section py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Try Our Tools</h2>
+            <p class="lead text-muted">No signup required - experience the power of our platform</p>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Chatbot Demo -->
+            <div class="col-lg-6" id="chatbot-demo">
+                <div class="card shadow-lg border-0 h-100">
+                    <div class="card-header text-white border-0" style="background: linear-gradient(135deg, #10B981, #059669);">
+                        <h4 class="mb-0">
+                            <i class="fas fa-robot me-2"></i>
+                            AI Health Assistant
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <p class="text-muted mb-4">
+                            Ask health-related questions and get instant AI-powered answers. 
+                            Try it now - no login needed!
+                        </p>
+                        <div class="demo-preview p-4 rounded" style="background: #f8f9fa; border: 2px dashed #dee2e6;">
+                            <div class="text-center">
+                                <i class="fas fa-comments fa-4x text-muted mb-3"></i>
+                                <p class="mb-3">Start a conversation with our AI assistant</p>
+                                <a href="{% url 'chatbot:chat' %}" class="btn btn-success btn-lg">
+                                    <i class="fas fa-comment-medical me-2"></i>
+                                    Start Chatting
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mt-3 small text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Get answers about symptoms, medications, and general health topics
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Insurance Calculator Demo -->
+            <div class="col-lg-6" id="insurance-demo">
+                <div class="card shadow-lg border-0 h-100">
+                    <div class="card-header text-white border-0" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+                        <h4 class="mb-0">
+                            <i class="fas fa-calculator me-2"></i>
+                            Insurance Cost Predictor
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <p class="text-muted mb-4">
+                            Get instant ML-powered insurance cost estimates based on your health profile.
+                        </p>
+                        <div class="demo-preview p-4 rounded" style="background: #f8f9fa; border: 2px dashed #dee2e6;">
+                            <div class="text-center">
+                                <i class="fas fa-chart-line fa-4x text-muted mb-3"></i>
+                                <p class="mb-3">Calculate your estimated insurance costs</p>
+                                <a href="{% url 'insurance:predict' %}" class="btn btn-warning btn-lg">
+                                    <i class="fas fa-magic me-2"></i>
+                                    Calculate Now
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mt-3 small text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            AI model trained on real insurance data for accurate predictions
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works-section py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">How It Works</h2>
+            <p class="lead text-muted">Get started in 3 simple steps</p>
+        </div>
+        
+        <div class="row g-4 text-center">
+            <div class="col-md-4 fade-in">
+                <div class="step-card p-4">
+                    <div class="step-number mb-3">
+                        <span class="badge rounded-circle bg-primary" style="width: 60px; height: 60px; font-size: 24px; line-height: 60px;">1</span>
+                    </div>
+                    <h5 class="mb-3">Create Account</h5>
+                    <p class="text-muted">Sign up as a patient or doctor in seconds. It's completely free!</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 fade-in">
+                <div class="step-card p-4">
+                    <div class="step-number mb-3">
+                        <span class="badge rounded-circle bg-success" style="width: 60px; height: 60px; font-size: 24px; line-height: 60px;">2</span>
+                    </div>
+                    <h5 class="mb-3">Explore Features</h5>
+                    <p class="text-muted">Use AI chatbot, book appointments, and predict insurance costs.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 fade-in">
+                <div class="step-card p-4">
+                    <div class="step-number mb-3">
+                        <span class="badge rounded-circle bg-warning" style="width: 60px; height: 60px; font-size: 24px; line-height: 60px;">3</span>
+                    </div>
+                    <h5 class="mb-3">Manage Health</h5>
+                    <p class="text-muted">Track your appointments, conversations, and health predictions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container">
+        <div class="row text-center text-white g-4">
+            <div class="col-md-3 fade-in">
+                <div class="stat-item">
+                    <i class="fas fa-users fa-3x mb-3 opacity-75"></i>
+                    <h2 class="display-4 fw-bold">1000+</h2>
+                    <p class="lead">Registered Users</p>
+                </div>
+            </div>
+            <div class="col-md-3 fade-in">
+                <div class="stat-item">
+                    <i class="fas fa-user-md fa-3x mb-3 opacity-75"></i>
+                    <h2 class="display-4 fw-bold">50+</h2>
+                    <p class="lead">Qualified Doctors</p>
+                </div>
+            </div>
+            <div class="col-md-3 fade-in">
+                <div class="stat-item">
+                    <i class="fas fa-calendar-check fa-3x mb-3 opacity-75"></i>
+                    <h2 class="display-4 fw-bold">5000+</h2>
+                    <p class="lead">Appointments Booked</p>
+                </div>
+            </div>
+            <div class="col-md-3 fade-in">
+                <div class="stat-item">
+                    <i class="fas fa-star fa-3x mb-3 opacity-75"></i>
+                    <h2 class="display-4 fw-bold">4.8</h2>
+                    <p class="lead">Average Rating</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5 bg-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-4">Ready to Get Started?</h2>
+                <p class="lead text-muted mb-4">
+                    Join thousands of users managing their health with our platform
+                </p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'users:dashboard' %}" class="btn btn-primary btn-lg px-5">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        Go to Dashboard
+                    </a>
+                {% else %}
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="{% url 'users:register_patient' %}" class="btn btn-primary btn-lg px-5">
+                            <i class="fas fa-user-plus me-2"></i>
+                            Register as Patient
+                        </a>
+                        <a href="{% url 'users:register_doctor' %}" class="btn btn-success btn-lg px-5">
+                            <i class="fas fa-user-md me-2"></i>
+                            Register as Doctor
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .text-gradient-light {
+        background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    /* Feature Cards */
+    .feature-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .feature-icon {
+        transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1);
+    }
+    
+    /* Step Cards */
+    .step-card {
+        transition: all 0.3s ease;
+    }
+    
+    .step-card:hover {
+        transform: scale(1.05);
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .fade-in {
+        animation: fadeInUp 0.8s ease-out;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-section {
+            text-align: center;
+        }
+        
+        .display-3 {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+{% endblock %}
