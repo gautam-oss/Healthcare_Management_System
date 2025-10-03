@@ -4,58 +4,134 @@
 {% block content %}
 <div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h3><i class="fas fa-calendar-plus"></i> Book New Appointment</h3>
+        <div class="col-lg-8">
+            <!-- Page Header -->
+            <div class="text-center mb-4 fade-in">
+                <h2 class="text-gradient mb-2">
+                    <i class="fas fa-calendar-plus me-2"></i>
+                    Book Your Appointment
+                </h2>
+                <p class="text-white-50">Schedule a consultation with our qualified doctors</p>
+            </div>
+            
+            <!-- Booking Form Card -->
+            <div class="card shadow-custom border-0 fade-in">
+                <div class="card-header text-white border-0" style="background: linear-gradient(135deg, #10B981, #059669);">
+                    <h4 class="mb-0">
+                        <i class="fas fa-stethoscope me-2"></i>
+                        Appointment Details
+                    </h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form method="post">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label">Select Doctor</label>
+                        
+                        <!-- Doctor Selection -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-user-md text-primary me-2"></i>
+                                Select Doctor
+                            </label>
                             {{ form.doctor }}
                             {% if form.doctor.errors %}
-                                <div class="text-danger">{{ form.doctor.errors }}</div>
+                                <div class="text-danger small mt-1">{{ form.doctor.errors }}</div>
                             {% endif %}
+                            <small class="text-muted d-block mt-1">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Choose a doctor based on your medical needs
+                            </small>
                         </div>
                         
+                        <!-- Date and Time Row -->
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Appointment Date</label>
-                                    {{ form.appointment_date }}
-                                    {% if form.appointment_date.errors %}
-                                        <div class="text-danger">{{ form.appointment_date.errors }}</div>
-                                    {% endif %}
-                                </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-calendar text-primary me-2"></i>
+                                    Appointment Date
+                                </label>
+                                {{ form.appointment_date }}
+                                {% if form.appointment_date.errors %}
+                                    <div class="text-danger small mt-1">{{ form.appointment_date.errors }}</div>
+                                {% endif %}
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Appointment Time</label>
-                                    {{ form.appointment_time }}
-                                    {% if form.appointment_time.errors %}
-                                        <div class="text-danger">{{ form.appointment_time.errors }}</div>
-                                    {% endif %}
-                                </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    Appointment Time
+                                </label>
+                                {{ form.appointment_time }}
+                                {% if form.appointment_time.errors %}
+                                    <div class="text-danger small mt-1">{{ form.appointment_time.errors }}</div>
+                                {% endif %}
                             </div>
                         </div>
                         
-                        <div class="mb-3">
-                            <label class="form-label">Reason for Visit</label>
+                        <!-- Reason for Visit -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-notes-medical text-primary me-2"></i>
+                                Reason for Visit
+                            </label>
                             {{ form.reason }}
                             {% if form.reason.errors %}
-                                <div class="text-danger">{{ form.reason.errors }}</div>
+                                <div class="text-danger small mt-1">{{ form.reason.errors }}</div>
                             {% endif %}
+                            <small class="text-muted d-block mt-1">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Please describe your symptoms or reason for consultation
+                            </small>
                         </div>
                         
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="{% url 'users:dashboard' %}" class="btn btn-secondary me-md-2">Cancel</a>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-calendar-plus"></i> Book Appointment
+                        <!-- Information Banner -->
+                        <div class="alert alert-info d-flex align-items-start mb-4">
+                            <i class="fas fa-info-circle fa-lg me-3 mt-1"></i>
+                            <div>
+                                <strong>Important Information:</strong>
+                                <ul class="mb-0 mt-2" style="list-style-position: inside;">
+                                    <li>Please arrive 10 minutes before your scheduled time</li>
+                                    <li>Bring any relevant medical records or test results</li>
+                                    <li>You will receive a confirmation once the doctor approves</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2 justify-content-end flex-wrap">
+                            <a href="{% url 'users:dashboard' %}" class="btn btn-outline-secondary px-4">
+                                <i class="fas fa-times me-2"></i>
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="fas fa-calendar-check me-2"></i>
+                                Book Appointment
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+            
+            <!-- Why Book With Us Section -->
+            <div class="row mt-4 g-3">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100 text-center p-3" style="background: rgba(255, 255, 255, 0.95);">
+                        <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
+                        <h6>Qualified Doctors</h6>
+                        <p class="small text-muted mb-0">Expert healthcare professionals</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100 text-center p-3" style="background: rgba(255, 255, 255, 0.95);">
+                        <i class="fas fa-clock fa-3x text-success mb-3"></i>
+                        <h6>Flexible Timing</h6>
+                        <p class="small text-muted mb-0">Choose your preferred slot</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100 text-center p-3" style="background: rgba(255, 255, 255, 0.95);">
+                        <i class="fas fa-bell fa-3x text-warning mb-3"></i>
+                        <h6>Instant Updates</h6>
+                        <p class="small text-muted mb-0">Get notified about your appointment</p>
+                    </div>
                 </div>
             </div>
         </div>

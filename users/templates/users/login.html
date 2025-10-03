@@ -2,39 +2,92 @@
 {% block title %}Login - Healthcare Management System{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white text-center">
-                    <h3><i class="fas fa-sign-in-alt"></i> Login</h3>
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
+<div class="auth-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7">
+                <div class="card auth-card border-0 shadow-custom fade-in">
+                    <div class="card-header text-center text-white border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem;">
                         <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control" name="username" required>
+                            <i class="fas fa-heartbeat fa-3x"></i>
                         </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" name="password" required>
+                        <h3 class="mb-1">Welcome Back!</h3>
+                        <p class="mb-0">Sign in to your account</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            <div class="mb-4">
+                                <label for="username" class="form-label">
+                                    <i class="fas fa-user me-2"></i>Username
+                                </label>
+                                <input type="text" 
+                                       class="form-control form-control-lg" 
+                                       id="username"
+                                       name="username" 
+                                       placeholder="Enter your username"
+                                       required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Password
+                                </label>
+                                <input type="password" 
+                                       class="form-control form-control-lg" 
+                                       id="password"
+                                       name="password" 
+                                       placeholder="Enter your password"
+                                       required>
+                            </div>
+                            
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-sign-in-alt me-2"></i> Sign In
+                                </button>
+                            </div>
+                            
+                            <div class="text-center">
+                                <a href="#" class="text-decoration-none small">
+                                    Forgot Password?
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center bg-light py-4">
+                        <p class="mb-3 text-muted">Don't have an account?</p>
+                        <div class="d-flex gap-2 justify-content-center flex-wrap">
+                            <a href="{% url 'users:register_patient' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-user me-2"></i>Register as Patient
+                            </a>
+                            <a href="{% url 'users:register_doctor' %}" class="btn btn-outline-success">
+                                <i class="fas fa-user-md me-2"></i>Register as Doctor
+                            </a>
                         </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-sign-in-alt"></i> Login
-                            </button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-                <div class="card-footer text-center">
-                    <p class="mb-0">Don't have an account?</p>
-                    <a href="{% url 'users:register_patient' %}" class="btn btn-outline-primary btn-sm me-2">
-                        Register as Patient
-                    </a>
-                    <a href="{% url 'users:register_doctor' %}" class="btn btn-outline-success btn-sm">
-                        Register as Doctor
-                    </a>
+                
+                <!-- Features Section -->
+                <div class="row mt-4 text-white text-center">
+                    <div class="col-4">
+                        <div class="p-3">
+                            <i class="fas fa-calendar-check fa-2x mb-2"></i>
+                            <p class="small mb-0">Easy Booking</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3">
+                            <i class="fas fa-robot fa-2x mb-2"></i>
+                            <p class="small mb-0">AI Assistant</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3">
+                            <i class="fas fa-shield-alt fa-2x mb-2"></i>
+                            <p class="small mb-0">Secure</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

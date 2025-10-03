@@ -3,96 +3,267 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
-                <span class="badge bg-primary fs-6">
-                    {% if profile_type == 'patient' %}
-                        <i class="fas fa-user"></i> Patient
-                    {% else %}
-                        <i class="fas fa-user-md"></i> Doctor
-                    {% endif %}
-                </span>
+    <!-- Welcome Banner -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card glass-card border-0 shadow-custom fade-in" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-2">
+                                <i class="fas fa-hand-wave me-2"></i>
+                                Welcome back, {{ user.get_full_name|default:user.username }}!
+                            </h2>
+                            <p class="mb-0 opacity-90">
+                                {% if profile_type == 'patient' %}
+                                    Manage your health appointments and get AI-powered assistance
+                                {% else %}
+                                    Manage your patient appointments and consultations
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="badge bg-white text-primary fs-5 px-4 py-2">
+                                {% if profile_type == 'patient' %}
+                                    <i class="fas fa-user me-2"></i> Patient
+                                {% else %}
+                                    <i class="fas fa-user-md me-2"></i> Doctor
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     
+    <!-- Main Content -->
     <div class="row">
-        <div class="col-md-4">
-            <div class="card shadow mb-4">
-                <div class="card-header bg-info text-white">
-                    <h5><i class="fas fa-user-circle"></i> Profile Information</h5>
+        <!-- Profile Card -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-custom border-0 h-100 fade-in">
+                <div class="card-header bg-gradient-primary text-white border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-circle me-2"></i> Profile Information
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>Name:</strong> {{ user.get_full_name|default:user.username }}</p>
-                    <p><strong>Email:</strong> {{ user.email }}</p>
-                    <p><strong>Phone:</strong> {{ user.phone|default:"Not provided" }}</p>
+                    <div class="text-center mb-4">
+                        <div class="avatar-circle mx-auto mb-3" style="width: 100px; height: 100px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user fa-3x text-white"></i>
+                        </div>
+                        <h5 class="mb-0">{{ user.get_full_name|default:user.username }}</h5>
+                        <p class="text-muted small">{{ user.email }}</p>
+                    </div>
                     
-                    {% if profile_type == 'patient' %}
-                        <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|default:"Not provided" }}</p>
-                        <p><strong>Emergency Contact:</strong> {{ profile.emergency_contact|default:"Not provided" }}</p>
-                    {% elif profile_type == 'doctor' %}
-                        <p><strong>Specialization:</strong> {{ profile.specialization }}</p>
-                        <p><strong>Experience:</strong> {{ profile.experience_years }} years</p>
-                        <p><strong>Consultation Fee:</strong> ${{ profile.consultation_fee }}</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-8">
-            <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5><i class="fas fa-bolt"></i> Quick Actions</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
+                    <div class="profile-details">
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                            <span class="text-muted">
+                                <i class="fas fa-envelope me-2"></i> Email
+                            </span>
+                            <span class="fw-bold">{{ user.email }}</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                            <span class="text-muted">
+                                <i class="fas fa-phone me-2"></i> Phone
+                            </span>
+                            <span class="fw-bold">{{ user.phone|default:"Not provided" }}</span>
+                        </div>
+                        
                         {% if profile_type == 'patient' %}
-                            <div class="col-md-4">
-                                <a href="{% url 'appointments:book' %}" class="btn btn-success btn-lg w-100 mb-3">
-                                    <i class="fas fa-calendar-plus"></i><br>
-                                    Book Appointment
-                                </a>
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                <span class="text-muted">
+                                    <i class="fas fa-birthday-cake me-2"></i> DOB
+                                </span>
+                                <span class="fw-bold">{{ profile.date_of_birth|default:"Not set" }}</span>
                             </div>
-                        {% endif %}
-                        <div class="col-md-4">
-                            <a href="{% url 'appointments:my_appointments' %}" class="btn btn-info btn-lg w-100 mb-3">
-                                <i class="fas fa-calendar-check"></i><br>
-                                My Appointments
-                            </a>
-                        </div>
-                        {% if profile_type == 'patient' %}
-                        <div class="col-md-4">
-                            <a href="{% url 'chatbot:chat' %}" class="btn btn-warning btn-lg w-100 mb-3">
-                                <i class="fas fa-robot"></i><br>
-                                AI Assistant
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="{% url 'insurance:predict' %}" class="btn btn-primary btn-lg w-100 mb-3">
-                                <i class="fas fa-dollar-sign"></i><br>
-                                Insurance Predictor
-                             </a>
-                        </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted">
+                                    <i class="fas fa-phone-alt me-2"></i> Emergency
+                                </span>
+                                <span class="fw-bold">{{ profile.emergency_contact|default:"Not set" }}</span>
+                            </div>
+                        {% elif profile_type == 'doctor' %}
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                <span class="text-muted">
+                                    <i class="fas fa-stethoscope me-2"></i> Specialization
+                                </span>
+                                <span class="fw-bold">{{ profile.specialization }}</span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                <span class="text-muted">
+                                    <i class="fas fa-award me-2"></i> Experience
+                                </span>
+                                <span class="fw-bold">{{ profile.experience_years }} years</span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted">
+                                    <i class="fas fa-dollar-sign me-2"></i> Fee
+                                </span>
+                                <span class="fw-bold">${{ profile.consultation_fee }}</span>
+                            </div>
                         {% endif %}
                     </div>
                 </div>
             </div>
-            
-            <div class="card shadow">
-                <div class="card-body text-center">
-                    <h4>Welcome to Healthcare Management System!</h4>
-                    <p class="text-muted">
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-custom border-0 h-100 fade-in">
+                <div class="card-header bg-gradient-success text-white border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i> Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
                         {% if profile_type == 'patient' %}
-                            Book appointments with doctors and get AI-powered health assistance.
+                            <!-- Patient Actions -->
+                            <div class="col-md-6">
+                                <a href="{% url 'appointments:book' %}" class="text-decoration-none">
+                                    <div class="action-card p-4 rounded-4 text-center" style="background: linear-gradient(135deg, #10B981, #059669); color: white; transition: all 0.3s;">
+                                        <i class="fas fa-calendar-plus fa-3x mb-3"></i>
+                                        <h5 class="mb-2">Book Appointment</h5>
+                                        <p class="mb-0 small opacity-90">Schedule with a doctor</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <a href="{% url 'appointments:my_appointments' %}" class="text-decoration-none">
+                                    <div class="action-card p-4 rounded-4 text-center" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; transition: all 0.3s;">
+                                        <i class="fas fa-calendar-check fa-3x mb-3"></i>
+                                        <h5 class="mb-2">My Appointments</h5>
+                                        <p class="mb-0 small opacity-90">View all appointments</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <a href="{% url 'chatbot:chat' %}" class="text-decoration-none">
+                                    <div class="action-card p-4 rounded-4 text-center" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white; transition: all 0.3s;">
+                                        <i class="fas fa-robot fa-3x mb-3"></i>
+                                        <h5 class="mb-2">AI Health Assistant</h5>
+                                        <p class="mb-0 small opacity-90">Get instant health advice</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <a href="{% url 'insurance:predict' %}" class="text-decoration-none">
+                                    <div class="action-card p-4 rounded-4 text-center" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white; transition: all 0.3s;">
+                                        <i class="fas fa-calculator fa-3x mb-3"></i>
+                                        <h5 class="mb-2">Insurance Predictor</h5>
+                                        <p class="mb-0 small opacity-90">Estimate insurance costs</p>
+                                    </div>
+                                </a>
+                            </div>
                         {% else %}
-                            Manage your appointments and help patients with our AI-powered system.
+                            <!-- Doctor Actions -->
+                            <div class="col-md-6">
+                                <a href="{% url 'appointments:my_appointments' %}" class="text-decoration-none">
+                                    <div class="action-card p-4 rounded-4 text-center" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; transition: all 0.3s;">
+                                        <i class="fas fa-calendar-check fa-3x mb-3"></i>
+                                        <h5 class="mb-2">Manage Appointments</h5>
+                                        <p class="mb-0 small opacity-90">View patient appointments</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <a href="{% url 'chatbot:chat' %}" class="text-decoration-none">
+                                    <div class="action-card p-4 rounded-4 text-center" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white; transition: all 0.3s;">
+                                        <i class="fas fa-robot fa-3x mb-3"></i>
+                                        <h5 class="mb-2">AI Assistant</h5>
+                                        <p class="mb-0 small opacity-90">Medical information tool</p>
+                                    </div>
+                                </a>
+                            </div>
                         {% endif %}
-                    </p>
+                    </div>
+                    
+                    <!-- Info Banner -->
+                    <div class="mt-4 p-4 rounded-4" style="background: linear-gradient(135deg, #EFF6FF, #DBEAFE);">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-info-circle fa-2x text-primary me-3"></i>
+                            <div>
+                                <h6 class="mb-1 text-primary">Welcome to Healthcare MS!</h6>
+                                <p class="mb-0 small text-muted">
+                                    {% if profile_type == 'patient' %}
+                                        Book appointments with qualified doctors and get AI-powered health assistance 24/7.
+                                    {% else %}
+                                        Manage your patient appointments efficiently with our modern platform.
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- Statistics Section (Optional) -->
+    {% if profile_type == 'patient' %}
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card stats-card border-0 shadow-custom fade-in" style="background: linear-gradient(135deg, #10B981, #059669);">
+                <div class="card-body text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Total Appointments</h6>
+                            <h2 class="mb-0 fw-bold">0</h2>
+                        </div>
+                        <i class="fas fa-calendar-alt fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card stats-card border-0 shadow-custom fade-in" style="background: linear-gradient(135deg, #3B82F6, #2563EB);">
+                <div class="card-body text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">AI Conversations</h6>
+                            <h2 class="mb-0 fw-bold">0</h2>
+                        </div>
+                        <i class="fas fa-comments fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card stats-card border-0 shadow-custom fade-in" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">
+                <div class="card-body text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Insurance Predictions</h6>
+                            <h2 class="mb-0 fw-bold">0</h2>
+                        </div>
+                        <i class="fas fa-chart-line fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
+
+<style>
+    .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .avatar-circle {
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    }
+</style>
 {% endblock %}
