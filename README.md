@@ -9,23 +9,6 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Machine Learning](https://img.shields.io/badge/ML-Insurance_Prediction-orange)
 
-## 📱 Screenshots
-
-### Doctor Interface
-![Alt text](https://i.ibb.co/84PgLS3C/Screenshot-2025-09-24-021927.png)
-
-### My Appointments
-![Alt text](https://i.ibb.co/qM53R2DD/Screenshot-2025-09-24-023006.png)
-
-### Manage Appointments
-![Alt text](https://i.ibb.co/sdtPXqQj/Screenshot-2025-09-24-023042.png)
-
-### Patient Dashboard
-![Alt text](https://i.ibb.co/LDJnHzVn/Screenshot-2025-09-24-024346.png)
-
-### AI Chat Interface
-![Alt text](https://i.ibb.co/dsvNBLC0/Screenshot-2025-09-24-022925.png)
-
 ## ✨ Features
 
 ### 👥 **User Management**
