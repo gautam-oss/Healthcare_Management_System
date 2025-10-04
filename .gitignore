@@ -1,5 +1,14 @@
-.env
-db.sqlite3
+
 __pycache__/
 *.pyc
-myenv
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+env
+.vscode/
+db.sqlite3
