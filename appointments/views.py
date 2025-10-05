@@ -1,13 +1,32 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
 from .models import Appointment
 from .forms import AppointmentForm
 from users.models import Patient
 
+# ✅ NEW: Helper function to check appointment conflicts
+def check_appointment_conflict(doctor, appointment_date, appointment_time, exclude_id=None):
+    """
+    Check if doctor already has an appointment at this date/time
+    """
+    conflicts = Appointment.objects.filter(
+        doctor=doctor,
+        appointment_date=appointment_date,
+        appointment_time=appointment_time,
+        status__in=['pending', 'confirmed']  # Only check active appointments
+    )
+    
+    # If updating an appointment, exclude it from conflict check
+    if exclude_id:
+        conflicts = conflicts.exclude(id=exclude_id)
+    
+    return conflicts.exists()
+
 @login_required
 def book_appointment(request):
-    """Book a new appointment"""
+    """Book a new appointment - ✅ NOW WITH VALIDATION"""
     if not hasattr(request.user, 'patient'):
         messages.error(request, 'Only patients can book appointments.')
         return redirect('users:dashboard')
@@ -17,6 +36,28 @@ def book_appointment(request):
         if form.is_valid():
             appointment = form.save(commit=False)
             appointment.patient = request.user.patient
+            
+            # ✅ NEW: Validate appointment date is not in the past
+            if appointment.appointment_date < timezone.now().date():
+                messages.error(request, 'Cannot book appointments in the past. Please select a future date.')
+                return render(request, 'appointments/book.html', {'form': form})
+            
+            # ✅ NEW: Check if it's today and time has passed
+            if appointment.appointment_date == timezone.now().date():
+                current_time = timezone.now().time()
+                if appointment.appointment_time < current_time:
+                    messages.error(request, 'Cannot book appointments in the past. Please select a future time.')
+                    return render(request, 'appointments/book.html', {'form': form})
+            
+            # ✅ NEW: Check for appointment conflicts
+            if check_appointment_conflict(appointment.doctor, appointment.appointment_date, appointment.appointment_time):
+                messages.error(
+                    request, 
+                    f'This time slot is already booked. Please choose another time or doctor.'
+                )
+                return render(request, 'appointments/book.html', {'form': form})
+            
+            # All validations passed - save the appointment
             appointment.save()
             messages.success(request, 'Appointment booked successfully!')
             return redirect('appointments:success', appointment_id=appointment.id)
@@ -29,9 +70,15 @@ def book_appointment(request):
 def my_appointments(request):
     """View user's appointments"""
     if hasattr(request.user, 'patient'):
-        appointments = Appointment.objects.filter(patient=request.user.patient)
+        # ✅ IMPROVED: Use select_related to avoid N+1 queries
+        appointments = Appointment.objects.filter(
+            patient=request.user.patient
+        ).select_related('doctor__user')
     elif hasattr(request.user, 'doctor'):
-        appointments = Appointment.objects.filter(doctor=request.user.doctor)
+        # ✅ IMPROVED: Use select_related to avoid N+1 queries
+        appointments = Appointment.objects.filter(
+            doctor=request.user.doctor
+        ).select_related('patient__user')
     else:
         appointments = []
     
@@ -51,7 +98,7 @@ def appointment_success(request, appointment_id):
 
 @login_required
 def update_appointment(request, appointment_id):
-    """Doctor can update appointment status"""
+    """Doctor can update appointment status - ✅ WITH VALIDATION"""
     appointment = get_object_or_404(Appointment, id=appointment_id)
     
     # Only doctors can update appointments
@@ -68,12 +115,30 @@ def update_appointment(request, appointment_id):
         new_status = request.POST.get('status')
         notes = request.POST.get('notes', '')
         
-        if new_status in ['pending', 'confirmed', 'completed', 'cancelled']:
-            appointment.status = new_status
-            appointment.notes = notes
-            appointment.save()
-            
-            messages.success(request, f'Appointment status updated to {new_status}!')
-            return redirect('appointments:my_appointments')
+        # ✅ NEW: Validate status transitions
+        valid_statuses = ['pending', 'confirmed', 'completed', 'cancelled']
+        
+        if new_status not in valid_statuses:
+            messages.error(request, 'Invalid status selected.')
+            return render(request, 'appointments/update.html', {'appointment': appointment})
+        
+        # ✅ NEW: Business logic validation
+        # Can't confirm a cancelled appointment
+        if appointment.status == 'cancelled' and new_status == 'confirmed':
+            messages.error(request, 'Cannot confirm a cancelled appointment. Please create a new one.')
+            return render(request, 'appointments/update.html', {'appointment': appointment})
+        
+        # Can't cancel a completed appointment
+        if appointment.status == 'completed' and new_status == 'cancelled':
+            messages.error(request, 'Cannot cancel a completed appointment.')
+            return render(request, 'appointments/update.html', {'appointment': appointment})
+        
+        # Update the appointment
+        appointment.status = new_status
+        appointment.notes = notes
+        appointment.save()
+        
+        messages.success(request, f'Appointment status updated to {appointment.get_status_display()}!')
+        return redirect('appointments:my_appointments')
     
     return render(request, 'appointments/update.html', {'appointment': appointment})

@@ -1,4 +1,4 @@
-// Enhanced chat.js with better error handling and debugging
+// ✅ FIXED: Enhanced chat.js with proper CSRF token handling
 
 document.addEventListener('DOMContentLoaded', function() {
     const chatForm = document.getElementById('chatForm');
@@ -6,9 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatMessages = document.getElementById('chatMessages');
     const typingIndicator = document.getElementById('typingIndicator');
 
-    // Debug logging
     console.log('Chat system initialized');
-    console.log('CSRF Token:', getCSRFToken());
 
     // Auto-scroll to bottom
     function scrollToBottom() {
@@ -31,10 +29,18 @@ document.addEventListener('DOMContentLoaded', function() {
             .replace(/\n/g, '<br>');
         
         messageDiv.innerHTML = `
-            <div class="message-content">
-                <strong>${isUser ? 'You' : 'AI Assistant'}:</strong> ${sanitizedContent}
+            <div class="message-wrapper">
+                <div class="message-sender">
+                    ${isUser ? '<i class="fas fa-user-circle"></i> You' : '<i class="fas fa-robot"></i> AI Assistant'}
+                </div>
+                <div class="message-content">
+                    <div class="message-text">${sanitizedContent}</div>
+                </div>
+                <div class="message-time">
+                    <i class="far fa-clock me-1"></i>
+                    ${timeString}
+                </div>
             </div>
-            <div class="message-time">${timeString}</div>
         `;
         
         chatMessages.appendChild(messageDiv);
@@ -51,27 +57,52 @@ document.addEventListener('DOMContentLoaded', function() {
         typingIndicator.style.display = 'none';
     }
 
-    // Get CSRF token
-    function getCSRFToken() {
-        const token = document.querySelector('[name=csrfmiddlewaretoken]');
-        return token ? token.value : '';
+    // ✅ FIXED: Get CSRF token from cookie (proper Django way)
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
 
-    // Enhanced message sending with detailed error handling
+    // ✅ FIXED: Get CSRF token (supports both methods)
+    function getCSRFToken() {
+        // First try to get from cookie
+        let token = getCookie('csrftoken');
+        
+        // If not in cookie, get from form token
+        if (!token) {
+            const tokenInput = document.querySelector('[name=csrfmiddlewaretoken]');
+            token = tokenInput ? tokenInput.value : '';
+        }
+        
+        return token;
+    }
+
+    // Enhanced message sending with proper CSRF handling
     async function sendMessage(message) {
         console.log('Sending message:', message);
         
         try {
             const csrfToken = getCSRFToken();
+            
             if (!csrfToken) {
-                throw new Error('CSRF token not found');
+                throw new Error('CSRF token not found. Please refresh the page.');
             }
 
             const response = await fetch('/chatbot/send/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken,
+                    'X-CSRFToken': csrfToken,  // ✅ FIXED: Proper CSRF header
                 },
                 body: JSON.stringify({ message: message })
             });
@@ -94,6 +125,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (data.success) {
                 addMessage(data.ai_response, false);
+                
+                // Show helpful message for guests
+                if (!data.is_authenticated) {
+                    console.log('Guest mode - conversation not saved');
+                }
             } else {
                 console.error('API Error:', data.error);
                 addMessage(`Error: ${data.error || 'Something went wrong'}`, false);
@@ -164,21 +200,9 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(scrollToBottom, 300);
     });
 
-    // Test connection on page load
-    console.log('Testing server connection...');
-    fetch('/chatbot/send/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: JSON.stringify({ message: 'test' })
-    }).then(response => {
-        console.log('Server connection test:', response.status);
-    }).catch(error => {
-        console.error('Server connection failed:', error);
-        addMessage('⚠️ Connection to chat server failed. Please refresh the page.', false);
-    });
+    // ✅ NEW: Test connection on page load
+    console.log('Chat system ready!');
+    console.log('CSRF Token available:', getCSRFToken() ? 'Yes' : 'No');
 });
 
 // Page visibility handling

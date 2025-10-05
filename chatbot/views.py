@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
 from .models import Conversation, Message
@@ -29,12 +28,13 @@ def chat_page(request):
     
     return render(request, 'chatbot/chat.html', context)
 
-@csrf_exempt
+# ✅ REMOVED @csrf_exempt - Now using proper CSRF token
 @require_http_methods(["POST"])
 def send_message(request):
     """
     Handle chat messages via AJAX
     Works for both logged-in users and guests
+    ✅ FIXED: Now properly handles CSRF tokens
     """
     try:
         data = json.loads(request.body)
@@ -65,7 +65,7 @@ def send_message(request):
                 is_from_user=True
             )
             
-            # Get conversation history (last 10 messages)
+            # Get conversation history (last 10 messages for performance)
             recent_messages = conversation.messages.all()[:10]
         
         # Get AI response (works for both logged-in and guest users)
