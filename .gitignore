@@ -64,7 +64,7 @@ yarn-error.log*
 # Virtual Environment
 # ================================
 venv/
-env/
+environment/
 ENV/
 env.bak/
 venv.bak/
