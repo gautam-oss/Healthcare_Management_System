@@ -68,8 +68,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "Healthcare_Management_System.wsgi.application"
 
-# Database
-# ✅ YOUR SETUP: SQLite for local, PostgreSQL for production
+
+# SQLite for local, PostgreSQL for production
 database_url = os.environ.get("DATABASE_URL")
 if database_url:
     DATABASES = {"default": dj_database_url.parse(database_url)}
