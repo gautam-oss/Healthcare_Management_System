@@ -6,7 +6,7 @@ from .models import Appointment
 from .forms import AppointmentForm
 from users.models import Patient
 
-# ✅ NEW: Helper function to check appointment conflicts
+# ✅ Helper function to check appointment conflicts
 def check_appointment_conflict(doctor, appointment_date, appointment_time, exclude_id=None):
     """
     Check if doctor already has an appointment at this date/time
@@ -26,7 +26,7 @@ def check_appointment_conflict(doctor, appointment_date, appointment_time, exclu
 
 @login_required
 def book_appointment(request):
-    """Book a new appointment - ✅ NOW WITH VALIDATION"""
+    """Book a new appointment - WITH VALIDATION"""
     if not hasattr(request.user, 'patient'):
         messages.error(request, 'Only patients can book appointments.')
         return redirect('users:dashboard')
@@ -37,19 +37,19 @@ def book_appointment(request):
             appointment = form.save(commit=False)
             appointment.patient = request.user.patient
             
-            # ✅ NEW: Validate appointment date is not in the past
+            # Validate appointment date is not in the past
             if appointment.appointment_date < timezone.now().date():
                 messages.error(request, 'Cannot book appointments in the past. Please select a future date.')
                 return render(request, 'appointments/book.html', {'form': form})
             
-            # ✅ NEW: Check if it's today and time has passed
+            # Check if it's today and time has passed
             if appointment.appointment_date == timezone.now().date():
                 current_time = timezone.now().time()
                 if appointment.appointment_time < current_time:
                     messages.error(request, 'Cannot book appointments in the past. Please select a future time.')
                     return render(request, 'appointments/book.html', {'form': form})
             
-            # ✅ NEW: Check for appointment conflicts
+            # Check for appointment conflicts
             if check_appointment_conflict(appointment.doctor, appointment.appointment_date, appointment.appointment_time):
                 messages.error(
                     request, 
@@ -68,21 +68,46 @@ def book_appointment(request):
 
 @login_required
 def my_appointments(request):
-    """View user's appointments"""
+    """View user's appointments with statistics"""
     if hasattr(request.user, 'patient'):
-        # ✅ IMPROVED: Use select_related to avoid N+1 queries
+        # Get appointments for patient
         appointments = Appointment.objects.filter(
             patient=request.user.patient
         ).select_related('doctor__user')
+        
+        # ✅ NEW: Calculate statistics for patient
+        total_appointments = appointments.count()
+        confirmed_count = appointments.filter(status='confirmed').count()
+        pending_count = appointments.filter(status='pending').count()
+        completed_count = appointments.filter(status='completed').count()
+        
     elif hasattr(request.user, 'doctor'):
-        # ✅ IMPROVED: Use select_related to avoid N+1 queries
+        # Get appointments for doctor
         appointments = Appointment.objects.filter(
             doctor=request.user.doctor
         ).select_related('patient__user')
+        
+        # ✅ NEW: Calculate statistics for doctor
+        total_appointments = appointments.count()
+        confirmed_count = appointments.filter(status='confirmed').count()
+        pending_count = appointments.filter(status='pending').count()
+        completed_count = appointments.filter(status='completed').count()
     else:
         appointments = []
+        total_appointments = 0
+        confirmed_count = 0
+        pending_count = 0
+        completed_count = 0
     
-    return render(request, 'appointments/list.html', {'appointments': appointments})
+    context = {
+        'appointments': appointments,
+        'total_appointments': total_appointments,
+        'confirmed_count': confirmed_count,
+        'pending_count': pending_count,
+        'completed_count': completed_count,
+    }
+    
+    return render(request, 'appointments/list.html', context)
 
 @login_required
 def appointment_success(request, appointment_id):
@@ -98,7 +123,7 @@ def appointment_success(request, appointment_id):
 
 @login_required
 def update_appointment(request, appointment_id):
-    """Doctor can update appointment status - ✅ WITH VALIDATION"""
+    """Doctor can update appointment status - WITH VALIDATION"""
     appointment = get_object_or_404(Appointment, id=appointment_id)
     
     # Only doctors can update appointments
@@ -115,20 +140,18 @@ def update_appointment(request, appointment_id):
         new_status = request.POST.get('status')
         notes = request.POST.get('notes', '')
         
-        # ✅ NEW: Validate status transitions
+        # Validate status transitions
         valid_statuses = ['pending', 'confirmed', 'completed', 'cancelled']
         
         if new_status not in valid_statuses:
             messages.error(request, 'Invalid status selected.')
             return render(request, 'appointments/update.html', {'appointment': appointment})
         
-        # ✅ NEW: Business logic validation
-        # Can't confirm a cancelled appointment
+        # Business logic validation
         if appointment.status == 'cancelled' and new_status == 'confirmed':
             messages.error(request, 'Cannot confirm a cancelled appointment. Please create a new one.')
             return render(request, 'appointments/update.html', {'appointment': appointment})
         
-        # Can't cancel a completed appointment
         if appointment.status == 'completed' and new_status == 'cancelled':
             messages.error(request, 'Cannot cancel a completed appointment.')
             return render(request, 'appointments/update.html', {'appointment': appointment})
