@@ -65,7 +65,7 @@ yarn-error.log*
 # ================================
 venv/
 environment/
-ENV/
+myenv/
 env.bak/
 venv.bak/
 
