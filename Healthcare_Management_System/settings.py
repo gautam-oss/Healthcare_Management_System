@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     "appointments",
     "chatbot",
     "insurance",
+    "django_extensions",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -46,6 +48,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
 ]
 
 ROOT_URLCONF = "Healthcare_Management_System.urls"
@@ -183,6 +187,46 @@ LOGGING = {
 # ✅ NEW: Create logs directory if it doesn't exist
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(exist_ok=True)
+
+# Development settings (allow all origins)
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    # Production settings (specific domains only)
+    CORS_ALLOWED_ORIGINS = [
+        "https://healthcare-management-system-awe0.onrender.com",
+        "https://www.healthcare-management-system-awe0.onrender.com",
+    ]
+CORS_ALLOW_CREDENTIALS = True   
+
+CACHES = {
+    # Primary cache: Redis (for production, persistent)
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'KEY_PREFIX': 'healthcare',
+        'TIMEOUT': 300,  # 5 minutes default
+    },
+    
+    # Secondary cache: In-memory (for rate limiting, temporary data)
+    'locmem': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 300,
+    }
+}
+
+# Session storage uses Redis (default cache)
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+# Rate limiting uses in-memory cache (faster for frequent checks)
+RATELIMIT_ENABLE = True
+RATELIMIT_USE_CACHE = 'locmem'  # Use the faster in-memory cache
+
 
 # ✅ NEW: Email Configuration (for appointment notifications)
 # For development, emails will be printed to console

@@ -2,10 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django_ratelimit.decorators import ratelimit
+from django_ratelimit.exceptions import Ratelimited
 import json
 from .models import Conversation, Message
 from .services import get_gemini_response
 from django.contrib import messages
+
 
 def chat_page(request):
     """
@@ -28,14 +31,23 @@ def chat_page(request):
     
     return render(request, 'chatbot/chat.html', context)
 
-# ✅ REMOVED @csrf_exempt - Now using proper CSRF token
+
+# ✅ RATE LIMITED: 20 messages per minute per IP address
+@ratelimit(key='ip', rate='20/m', method='POST')
 @require_http_methods(["POST"])
 def send_message(request):
     """
     Handle chat messages via AJAX
     Works for both logged-in users and guests
-    ✅ FIXED: Now properly handles CSRF tokens
+    ✅ Rate Limited: 20 requests per minute
     """
+    # Check if rate limit was hit
+    if getattr(request, 'limited', False):
+        return JsonResponse({
+            'error': 'Too many requests. Please wait a moment before sending more messages.',
+            'rate_limited': True
+        }, status=429)
+    
     try:
         data = json.loads(request.body)
         user_message = data.get('message', '').strip()

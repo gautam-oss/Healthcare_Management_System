@@ -3,15 +3,29 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.db import models
+from django_ratelimit.decorators import ratelimit
+from django_ratelimit.exceptions import Ratelimited
 from .forms import InsurancePredictionForm
 from .models import InsurancePrediction
 from .ml_model import predictor
 
+
+# ✅ RATE LIMITED: 10 predictions per minute per IP address
+@ratelimit(key='ip', rate='10/m', method='POST')
 def predict_insurance(request):
     """
     Insurance cost prediction view - PUBLIC ACCESS
     Anyone can use it, but only logged-in users can save history
+    ✅ Rate Limited: 10 predictions per minute
     """
+    # Check if rate limit was hit
+    if getattr(request, 'limited', False):
+        messages.error(
+            request, 
+            'Too many predictions! Please wait a moment before trying again. (Limit: 10 per minute)'
+        )
+        return render(request, 'insurance/predict.html', {'form': InsurancePredictionForm()})
+    
     if request.method == 'POST':
         form = InsurancePredictionForm(request.POST)
         if form.is_valid():
@@ -34,6 +48,7 @@ def predict_insurance(request):
                     prediction.predicted_cost = predicted_cost
                     prediction.save()
                     
+                    messages.success(request, 'Prediction completed successfully!')
                     # Redirect to result page
                     return redirect('insurance:result', prediction_id=prediction.id)
                 else:
@@ -56,6 +71,7 @@ def predict_insurance(request):
         form = InsurancePredictionForm()
     
     return render(request, 'insurance/predict.html', {'form': form})
+
 
 def prediction_result(request, prediction_id):
     """
@@ -112,6 +128,7 @@ def prediction_result(request, prediction_id):
         messages.error(request, 'Prediction not found.')
         return redirect('insurance:predict')
 
+
 def guest_result(request):
     """
     Display prediction result for guest users - PUBLIC ACCESS
@@ -163,6 +180,7 @@ def guest_result(request):
     
     return render(request, 'insurance/result.html', context)
 
+
 @login_required
 def prediction_history(request):
     """
@@ -186,6 +204,7 @@ def prediction_history(request):
     }
     
     return render(request, 'insurance/history.html', context)
+
 
 def about_model(request):
     """

@@ -9,3 +9,6 @@ urlpatterns = [
     path('chatbot/', include('chatbot.urls')),         # Chatbot
     path('insurance/', include('insurance.urls')),     # Insurance
 ]
+def handler429(request, exception=None):
+    """Custom 429 (Too Many Requests) error page"""
+    return render(request, 'errors/429.html', status=429)
