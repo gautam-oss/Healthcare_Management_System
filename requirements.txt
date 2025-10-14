@@ -1,11 +1,16 @@
 annotated-types==0.7.0
 asgiref==3.10.0
+async-timeout==5.0.1
 cachetools==6.2.1
 certifi==2025.10.5
 charset-normalizer==3.4.3
 colorama==0.4.6
 dj-database-url==3.0.1
 Django==5.2.7
+django-cors-headers==4.9.0
+django-extensions==4.1
+django-ratelimit==4.1.0
+django-redis==6.0.0
 google-ai-generativelanguage==0.6.15
 google-api-core==2.26.0
 google-api-python-client==2.184.0
@@ -27,8 +32,10 @@ pyasn1==0.6.1
 pyasn1_modules==0.4.2
 pydantic==2.12.0
 pydantic_core==2.41.1
+pydotplus==2.0.2
 pyparsing==3.2.5
 python-decouple==3.8
+redis==6.4.0
 requests==2.32.5
 rsa==4.9.1
 sqlparse==0.5.3
