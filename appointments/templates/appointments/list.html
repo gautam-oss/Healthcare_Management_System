@@ -33,7 +33,7 @@
                 <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white;">
                     <div class="card-body text-center">
                         <i class="fas fa-clock fa-2x mb-2"></i>
-                        <h3 class="mb-0">{{ total_appointments }}</h3>
+                        <h3 class="mb-0">{{ appointments|length }}</h3>
                         <small>Total Appointments</small>
                     </div>
                 </div>
@@ -42,7 +42,7 @@
                 <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #10B981, #059669); color: white;">
                     <div class="card-body text-center">
                         <i class="fas fa-check-circle fa-2x mb-2"></i>
-                        <h3 class="mb-0">{{ confirmed_count }}</h3>
+                        <h3 class="mb-0">0</h3>
                         <small>Confirmed</small>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                 <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: white;">
                     <div class="card-body text-center">
                         <i class="fas fa-hourglass-half fa-2x mb-2"></i>
-                        <h3 class="mb-0">{{ pending_count }}</h3>
+                        <h3 class="mb-0">0</h3>
                         <small>Pending</small>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                 <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white;">
                     <div class="card-body text-center">
                         <i class="fas fa-clipboard-check fa-2x mb-2"></i>
-                        <h3 class="mb-0">{{ completed_count }}</h3>
+                        <h3 class="mb-0">0</h3>
                         <small>Completed</small>
                     </div>
                 </div>
