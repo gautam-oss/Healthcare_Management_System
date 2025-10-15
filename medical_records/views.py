@@ -1,6 +1,6 @@
 """
 medical_records/views.py
-Views for Medical Records System - FIXED INDENTATION
+Views for Medical Records System - COMPLETE UPDATED VERSION
 """
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
 from django.db.models import Q, Count
 from django.utils import timezone
+from django.core.paginator import Paginator
 
 from .models import (
     MedicalRecord, Prescription, LabTest, 
@@ -516,10 +517,12 @@ def patient_health_timeline(request):
     }
     return render(request, 'medical_records/timeline.html', context)
 
+
 @login_required
 def doctor_my_patients(request):
     """
-    Simple page showing doctor's patients with their medical records
+    Doctor's patient list - Shows ALL patients who have appointments with this doctor
+    With working search functionality
     """
     if not hasattr(request.user, 'doctor'):
         messages.error(request, 'Only doctors can access this page.')
@@ -527,55 +530,90 @@ def doctor_my_patients(request):
     
     doctor = request.user.doctor
     
-    # Get all patients this doctor has treated (with completed appointments)
-    patients_with_records = []
+    # Get ALL patients who have ANY appointments with this doctor (not just completed)
+    patient_ids = Appointment.objects.filter(
+        doctor=doctor
+    ).values_list('patient_id', flat=True).distinct()
     
-    # Get unique patients from completed appointments
-    completed_appointments = Appointment.objects.filter(
-        doctor=doctor,
-        status='completed'
-    ).select_related('patient__user').order_by('-appointment_date')
-    
-    seen_patients = set()
-    
-    for appointment in completed_appointments:
-        patient = appointment.patient
-        
-        # Skip if we've already added this patient
-        if patient.id in seen_patients:
-            continue
-        
-        seen_patients.add(patient.id)
-        
-        # Get patient's medical records (from this doctor)
-        medical_records = MedicalRecord.objects.filter(
-            patient=patient,
-            doctor=doctor
-        ).order_by('-created_at')
-        
-        # Count records
-        total_records = medical_records.count()
-        
-        patients_with_records.append({
-            'patient': patient,
-            'records': medical_records[:5],  # Latest 5 records
-            'total_records': total_records,
-            'latest_record': medical_records.first() if medical_records.exists() else None,
-            'last_appointment': appointment,
-        })
+    # Get patient queryset
+    patients = Patient.objects.filter(id__in=patient_ids).select_related('user')
     
     # Search functionality
-    search_query = request.GET.get('search', '')
+    search_query = request.GET.get('search', '').strip()
     if search_query:
-        patients_with_records = [
-            p for p in patients_with_records
-            if search_query.lower() in p['patient'].user.get_full_name().lower() or
-               search_query.lower() in p['patient'].user.email.lower()
-        ]
+        patients = patients.filter(
+            Q(user__first_name__icontains=search_query) |
+            Q(user__last_name__icontains=search_query) |
+            Q(user__email__icontains=search_query) |
+            Q(user__phone__icontains=search_query) |
+            Q(user__username__icontains=search_query)
+        )
+    
+    # Add statistics for each patient
+    patients_data = []
+    for patient in patients:
+        # Count total appointments with this doctor
+        total_appointments = Appointment.objects.filter(
+            patient=patient,
+            doctor=doctor
+        ).count()
+        
+        # Count medical records from this doctor
+        total_records = MedicalRecord.objects.filter(
+            patient=patient,
+            doctor=doctor
+        ).count()
+        
+        # Get last appointment date (any status)
+        last_appointment = Appointment.objects.filter(
+            patient=patient,
+            doctor=doctor
+        ).order_by('-appointment_date').first()
+        
+        # Get appointment status summary
+        pending_count = Appointment.objects.filter(
+            patient=patient,
+            doctor=doctor,
+            status='pending'
+        ).count()
+        
+        confirmed_count = Appointment.objects.filter(
+            patient=patient,
+            doctor=doctor,
+            status='confirmed'
+        ).count()
+        
+        completed_count = Appointment.objects.filter(
+            patient=patient,
+            doctor=doctor,
+            status='completed'
+        ).count()
+        
+        patients_data.append({
+            'id': patient.id,
+            'patient': patient,
+            'user': patient.user,
+            'total_appointments': total_appointments,
+            'total_records': total_records,
+            'last_appointment': last_appointment.appointment_date if last_appointment else None,
+            'last_appointment_status': last_appointment.get_status_display() if last_appointment else None,
+            'pending_count': pending_count,
+            'confirmed_count': confirmed_count,
+            'completed_count': completed_count,
+        })
+    
+    # Sort by most recent appointment
+    patients_data.sort(key=lambda x: x['last_appointment'] if x['last_appointment'] else '1900-01-01', reverse=True)
+    
+    # Pagination
+    paginator = Paginator(patients_data, 9)  # 9 patients per page
+    page_number = request.GET.get('page', 1)
+    patients_page = paginator.get_page(page_number)
     
     context = {
-        'patients_with_records': patients_with_records,
-        'total_patients': len(patients_with_records),
+        'patients': patients_page,
+        'total_patients': len(patients_data),
         'search_query': search_query,
     }
+    
     return render(request, 'medical_records/doctor_my_patients.html', context)

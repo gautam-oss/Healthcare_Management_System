@@ -27,44 +27,40 @@
     </div>
     
     {% if appointments %}
-        <!-- Filter/Stats Bar -->
+        <!-- Filter/Stats Bar with REAL COUNTS -->
         <div class="row mb-4 g-3">
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white;">
+                <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: white;">
                     <div class="card-body text-center">
-                        <i class="fas fa-clock fa-2x mb-2"></i>
+                        <i class="fas fa-calendar-alt fa-2x mb-2"></i>
                         <h3 class="mb-0">{{ appointments|length }}</h3>
                         <small>Total Appointments</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #10B981, #059669); color: white;">
+                <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #10B981, #059669); color: white;">
                     <div class="card-body text-center">
                         <i class="fas fa-check-circle fa-2x mb-2"></i>
-                        <h3 class="mb-0">
-                            {% with confirmed=appointments|length %}
-                                {{ confirmed|default:0 }}
-                            {% endwith %}
-                        </h3>
+                        <h3 class="mb-0">{{ confirmed_count }}</h3>
                         <small>Confirmed</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: white;">
+                <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white;">
                     <div class="card-body text-center">
                         <i class="fas fa-hourglass-half fa-2x mb-2"></i>
-                        <h3 class="mb-0">0</h3>
+                        <h3 class="mb-0">{{ pending_count }}</h3>
                         <small>Pending</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white;">
+                <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white;">
                     <div class="card-body text-center">
                         <i class="fas fa-clipboard-check fa-2x mb-2"></i>
-                        <h3 class="mb-0">0</h3>
+                        <h3 class="mb-0">{{ completed_count }}</h3>
                         <small>Completed</small>
                     </div>
                 </div>
@@ -173,7 +169,7 @@
                                     Details
                                 </button>
                                 
-                                <!-- NEW: Medical Records Integration for Doctors -->
+                                <!-- Medical Records Integration for Doctors -->
                                 {% if user.user_type == 'doctor' %}
                                     {% if appointment.status == 'completed' %}
                                         {% if appointment.medical_record %}
@@ -199,7 +195,7 @@
                                     {% endif %}
                                 {% endif %}
                                 
-                                <!-- NEW: View Medical Record for Patients -->
+                                <!-- View Medical Record for Patients -->
                                 {% if user.user_type == 'patient' and appointment.status == 'completed' %}
                                     {% if appointment.medical_record %}
                                         <a href="{% url 'medical_records:detail' appointment.medical_record.id %}" 
@@ -259,27 +255,21 @@
 .bg-gradient-success {
     background: linear-gradient(135deg, #10B981, #059669);
 }
-
 .bg-gradient-primary {
     background: linear-gradient(135deg, #3B82F6, #2563EB);
 }
-
 .bg-gradient-info {
     background: linear-gradient(135deg, #06B6D4, #0891B2);
 }
-
 .bg-gradient-danger {
     background: linear-gradient(135deg, #EF4444, #DC2626);
 }
-
 .shadow-custom {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
-
 .fade-in {
     animation: fadeIn 0.5s ease-in;
 }
-
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -290,15 +280,9 @@
         transform: translateY(0);
     }
 }
-
 .card:hover {
     transform: translateY(-5px);
     transition: all 0.3s ease;
-}
-
-.btn-sm {
-    font-size: 0.875rem;
-    padding: 0.5rem 0.75rem;
 }
 </style>
 {% endblock %}

@@ -27,15 +27,41 @@ def book_appointment(request):
 
 @login_required
 def my_appointments(request):
-    """View user's appointments"""
+    """View user's appointments with real status counts"""
     if hasattr(request.user, 'patient'):
-        appointments = Appointment.objects.filter(patient=request.user.patient)
+        appointments = Appointment.objects.filter(
+            patient=request.user.patient
+        ).select_related('doctor__user')
+        
+        # Calculate real status counts for patient
+        confirmed_count = appointments.filter(status='confirmed').count()
+        pending_count = appointments.filter(status='pending').count()
+        completed_count = appointments.filter(status='completed').count()
+        cancelled_count = appointments.filter(status='cancelled').count()
+        
     elif hasattr(request.user, 'doctor'):
-        appointments = Appointment.objects.filter(doctor=request.user.doctor)
+        appointments = Appointment.objects.filter(
+            doctor=request.user.doctor
+        ).select_related('patient__user')
+        
+        # Calculate real status counts for doctor
+        confirmed_count = appointments.filter(status='confirmed').count()
+        pending_count = appointments.filter(status='pending').count()
+        completed_count = appointments.filter(status='completed').count()
+        cancelled_count = appointments.filter(status='cancelled').count()
     else:
         appointments = []
+        confirmed_count = pending_count = completed_count = cancelled_count = 0
     
-    return render(request, 'appointments/list.html', {'appointments': appointments})
+    context = {
+        'appointments': appointments,
+        'confirmed_count': confirmed_count,
+        'pending_count': pending_count,
+        'completed_count': completed_count,
+        'cancelled_count': cancelled_count,
+    }
+    
+    return render(request, 'appointments/list.html', context)
 
 @login_required
 def appointment_success(request, appointment_id):
@@ -69,11 +95,14 @@ def update_appointment(request, appointment_id):
         notes = request.POST.get('notes', '')
         
         if new_status in ['pending', 'confirmed', 'completed', 'cancelled']:
+            old_status = appointment.status
             appointment.status = new_status
             appointment.notes = notes
             appointment.save()
             
-            messages.success(request, f'Appointment status updated to {new_status}!')
+            messages.success(request, f'Appointment status updated from {old_status} to {new_status}!')
             return redirect('appointments:my_appointments')
+        else:
+            messages.error(request, 'Invalid status selected.')
     
     return render(request, 'appointments/update.html', {'appointment': appointment})
