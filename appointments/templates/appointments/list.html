@@ -42,7 +42,11 @@
                 <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #10B981, #059669); color: white;">
                     <div class="card-body text-center">
                         <i class="fas fa-check-circle fa-2x mb-2"></i>
-                        <h3 class="mb-0">0</h3>
+                        <h3 class="mb-0">
+                            {% with confirmed=appointments|length %}
+                                {{ confirmed|default:0 }}
+                            {% endwith %}
+                        </h3>
                         <small>Confirmed</small>
                     </div>
                 </div>
@@ -163,11 +167,54 @@
                         
                         <!-- Quick Actions Footer -->
                         <div class="card-footer bg-light border-0">
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2 flex-wrap">
                                 <button class="btn btn-sm btn-outline-primary flex-fill">
                                     <i class="fas fa-info-circle me-1"></i>
                                     Details
                                 </button>
+                                
+                                <!-- NEW: Medical Records Integration for Doctors -->
+                                {% if user.user_type == 'doctor' %}
+                                    {% if appointment.status == 'completed' %}
+                                        {% if appointment.medical_record %}
+                                            <!-- View existing medical record -->
+                                            <a href="{% url 'medical_records:detail' appointment.medical_record.id %}" 
+                                               class="btn btn-sm btn-info flex-fill">
+                                                <i class="fas fa-file-medical me-1"></i>
+                                                View Record
+                                            </a>
+                                        {% else %}
+                                            <!-- Create new medical record -->
+                                            <a href="{% url 'medical_records:create' appointment.id %}" 
+                                               class="btn btn-sm btn-success flex-fill">
+                                                <i class="fas fa-plus me-1"></i>
+                                                Create Record
+                                            </a>
+                                        {% endif %}
+                                    {% elif appointment.status == 'confirmed' %}
+                                        <button class="btn btn-sm btn-outline-secondary flex-fill" disabled>
+                                            <i class="fas fa-file-medical me-1"></i>
+                                            Complete First
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
+                                
+                                <!-- NEW: View Medical Record for Patients -->
+                                {% if user.user_type == 'patient' and appointment.status == 'completed' %}
+                                    {% if appointment.medical_record %}
+                                        <a href="{% url 'medical_records:detail' appointment.medical_record.id %}" 
+                                           class="btn btn-sm btn-info flex-fill">
+                                            <i class="fas fa-file-medical me-1"></i>
+                                            Medical Record
+                                        </a>
+                                    {% else %}
+                                        <button class="btn btn-sm btn-outline-secondary flex-fill" disabled>
+                                            <i class="fas fa-file-medical me-1"></i>
+                                            No Record Yet
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
+                                
                                 {% if user.user_type == 'patient' and appointment.status == 'pending' %}
                                     <button class="btn btn-sm btn-outline-danger">
                                         <i class="fas fa-times me-1"></i>
@@ -207,4 +254,51 @@
         </div>
     {% endif %}
 </div>
+
+<style>
+.bg-gradient-success {
+    background: linear-gradient(135deg, #10B981, #059669);
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #06B6D4, #0891B2);
+}
+
+.bg-gradient-danger {
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+}
+
+.shadow-custom {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+
+.btn-sm {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+}
+</style>
 {% endblock %}

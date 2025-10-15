@@ -126,7 +126,7 @@
                             <!-- Patient Actions -->
                             <div class="col-md-6">
                                 <a href="{% url 'appointments:book' %}" class="text-decoration-none">
-                                    <div class="action-card p-4 rounded-4 text-center" style="background: linear-gradient(135deg, #10B981, #059669); color: white; transition: all 0.3s;">
+                                    <div class="action-card p-4 rounded-4 text-center h-100" style="background: linear-gradient(135deg, #10B981, #059669); color: white; transition: all 0.3s;">
                                         <i class="fas fa-calendar-plus fa-3x mb-3"></i>
                                         <h5 class="mb-2">Book Appointment</h5>
                                         <p class="mb-0 small opacity-90">Schedule with a doctor</p>
@@ -136,7 +136,7 @@
                             
                             <div class="col-md-6">
                                 <a href="{% url 'appointments:my_appointments' %}" class="text-decoration-none">
-                                    <div class="action-card p-4 rounded-4 text-center" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; transition: all 0.3s;">
+                                    <div class="action-card p-4 rounded-4 text-center h-100" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; transition: all 0.3s;">
                                         <i class="fas fa-calendar-check fa-3x mb-3"></i>
                                         <h5 class="mb-2">My Appointments</h5>
                                         <p class="mb-0 small opacity-90">View all appointments</p>
@@ -144,9 +144,31 @@
                                 </a>
                             </div>
                             
+                            <!-- NEW: Medical Records -->
+                            <div class="col-md-6">
+                                <a href="{% url 'medical_records:dashboard' %}" class="text-decoration-none">
+                                    <div class="action-card p-4 rounded-4 text-center h-100" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white; transition: all 0.3s;">
+                                        <i class="fas fa-file-medical fa-3x mb-3"></i>
+                                        <h5 class="mb-2">Medical Records</h5>
+                                        <p class="mb-0 small opacity-90">View health records</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- NEW: Health Timeline -->
+                            <div class="col-md-6">
+                                <a href="{% url 'medical_records:timeline' %}" class="text-decoration-none">
+                                    <div class="action-card p-4 rounded-4 text-center h-100" style="background: linear-gradient(135deg, #EC4899, #DB2777); color: white; transition: all 0.3s;">
+                                        <i class="fas fa-stream fa-3x mb-3"></i>
+                                        <h5 class="mb-2">Health Timeline</h5>
+                                        <p class="mb-0 small opacity-90">Complete health history</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
                             <div class="col-md-6">
                                 <a href="{% url 'chatbot:chat' %}" class="text-decoration-none">
-                                    <div class="action-card p-4 rounded-4 text-center" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white; transition: all 0.3s;">
+                                    <div class="action-card p-4 rounded-4 text-center h-100" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white; transition: all 0.3s;">
                                         <i class="fas fa-robot fa-3x mb-3"></i>
                                         <h5 class="mb-2">AI Health Assistant</h5>
                                         <p class="mb-0 small opacity-90">Get instant health advice</p>
@@ -156,7 +178,7 @@
                             
                             <div class="col-md-6">
                                 <a href="{% url 'insurance:predict' %}" class="text-decoration-none">
-                                    <div class="action-card p-4 rounded-4 text-center" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white; transition: all 0.3s;">
+                                    <div class="action-card p-4 rounded-4 text-center h-100" style="background: linear-gradient(135deg, #06B6D4, #0891B2); color: white; transition: all 0.3s;">
                                         <i class="fas fa-calculator fa-3x mb-3"></i>
                                         <h5 class="mb-2">Insurance Predictor</h5>
                                         <p class="mb-0 small opacity-90">Estimate insurance costs</p>
@@ -167,7 +189,7 @@
                             <!-- Doctor Actions -->
                             <div class="col-md-6">
                                 <a href="{% url 'appointments:my_appointments' %}" class="text-decoration-none">
-                                    <div class="action-card p-4 rounded-4 text-center" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; transition: all 0.3s;">
+                                    <div class="action-card p-4 rounded-4 text-center h-100" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; transition: all 0.3s;">
                                         <i class="fas fa-calendar-check fa-3x mb-3"></i>
                                         <h5 class="mb-2">Manage Appointments</h5>
                                         <p class="mb-0 small opacity-90">View patient appointments</p>
@@ -175,12 +197,56 @@
                                 </a>
                             </div>
                             
+                            <!-- NEW: Medical Records for Doctors -->
+                            <div class="col-md-6">
+                                <a href="{% url 'medical_records:dashboard' %}" class="text-decoration-none">
+                                    <div class="action-card p-4 rounded-4 text-center h-100" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white; transition: all 0.3s;">
+                                        <i class="fas fa-file-medical fa-3x mb-3"></i>
+                                        <h5 class="mb-2">Medical Records</h5>
+                                        <p class="mb-0 small opacity-90">Manage patient records</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- NEW: Prescriptions -->
+                            <div class="col-md-6">
+                                <a href="{% url 'medical_records:prescription_list' %}" class="text-decoration-none">
+                                    <div class="action-card p-4 rounded-4 text-center h-100" style="background: linear-gradient(135deg, #10B981, #059669); color: white; transition: all 0.3s;">
+                                        <i class="fas fa-pills fa-3x mb-3"></i>
+                                        <h5 class="mb-2">Prescriptions</h5>
+                                        <p class="mb-0 small opacity-90">Manage prescriptions</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- NEW: Lab Tests -->
+                            <div class="col-md-6">
+                                <a href="{% url 'medical_records:lab_test_list' %}" class="text-decoration-none">
+                                    <div class="action-card p-4 rounded-4 text-center h-100" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white; transition: all 0.3s;">
+                                        <i class="fas fa-flask fa-3x mb-3"></i>
+                                        <h5 class="mb-2">Lab Tests</h5>
+                                        <p class="mb-0 small opacity-90">Manage lab tests</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
                             <div class="col-md-6">
                                 <a href="{% url 'chatbot:chat' %}" class="text-decoration-none">
-                                    <div class="action-card p-4 rounded-4 text-center" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white; transition: all 0.3s;">
+                                    <div class="action-card p-4 rounded-4 text-center h-100" style="background: linear-gradient(135deg, #06B6D4, #0891B2); color: white; transition: all 0.3s;">
                                         <i class="fas fa-robot fa-3x mb-3"></i>
                                         <h5 class="mb-2">AI Assistant</h5>
                                         <p class="mb-0 small opacity-90">Medical information tool</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- NEW: Vaccinations -->
+                            <div class="col-md-6">
+                                <a href="{% url 'medical_records:vaccination_list' %}" class="text-decoration-none">
+                                    <div class="action-card p-4 rounded-4 text-center h-100" style="background: linear-gradient(135deg, #EC4899, #DB2777); color: white; transition: all 0.3s;">
+                                        <i class="fas fa-syringe fa-3x mb-3"></i>
+                                        <h5 class="mb-2">Vaccinations</h5>
+                                        <p class="mb-0 small opacity-90">Manage vaccinations</p>
                                     </div>
                                 </a>
                             </div>
@@ -195,9 +261,9 @@
                                 <h6 class="mb-1 text-primary">Welcome to Healthcare MS!</h6>
                                 <p class="mb-0 small text-muted">
                                     {% if profile_type == 'patient' %}
-                                        Book appointments with qualified doctors and get AI-powered health assistance 24/7.
+                                        Book appointments with qualified doctors, track your medical records, and get AI-powered health assistance 24/7.
                                     {% else %}
-                                        Manage your patient appointments efficiently with our modern platform.
+                                        Manage your patient appointments, create medical records, and prescribe medications efficiently.
                                     {% endif %}
                                 </p>
                             </div>
@@ -208,15 +274,16 @@
         </div>
     </div>
     
-    <!-- Statistics Section (Optional) -->
-    {% if profile_type == 'patient' %}
+    <!-- Statistics Section -->
     <div class="row">
-        <div class="col-md-4 mb-4">
+        <div class="col-md-3 mb-4">
             <div class="card stats-card border-0 shadow-custom fade-in" style="background: linear-gradient(135deg, #10B981, #059669);">
                 <div class="card-body text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-white-50 mb-2">Total Appointments</h6>
+                            <h6 class="text-white-50 mb-2">
+                                {% if profile_type == 'patient' %}Total Appointments{% else %}Patient Consultations{% endif %}
+                            </h6>
                             <h2 class="mb-0 fw-bold">0</h2>
                         </div>
                         <i class="fas fa-calendar-alt fa-3x opacity-25"></i>
@@ -225,35 +292,52 @@
             </div>
         </div>
         
-        <div class="col-md-4 mb-4">
-            <div class="card stats-card border-0 shadow-custom fade-in" style="background: linear-gradient(135deg, #3B82F6, #2563EB);">
+        <div class="col-md-3 mb-4">
+            <div class="card stats-card border-0 shadow-custom fade-in" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">
                 <div class="card-body text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-white-50 mb-2">AI Conversations</h6>
+                            <h6 class="text-white-50 mb-2">Medical Records</h6>
                             <h2 class="mb-0 fw-bold">0</h2>
                         </div>
-                        <i class="fas fa-comments fa-3x opacity-25"></i>
+                        <i class="fas fa-file-medical fa-3x opacity-25"></i>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="col-md-4 mb-4">
-            <div class="card stats-card border-0 shadow-custom fade-in" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">
+        <div class="col-md-3 mb-4">
+            <div class="card stats-card border-0 shadow-custom fade-in" style="background: linear-gradient(135deg, #3B82F6, #2563EB);">
                 <div class="card-body text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-white-50 mb-2">Insurance Predictions</h6>
+                            <h6 class="text-white-50 mb-2">
+                                {% if profile_type == 'patient' %}AI Chats{% else %}Prescriptions{% endif %}
+                            </h6>
                             <h2 class="mb-0 fw-bold">0</h2>
                         </div>
-                        <i class="fas fa-chart-line fa-3x opacity-25"></i>
+                        <i class="fas {% if profile_type == 'patient' %}fa-comments{% else %}fa-pills{% endif %} fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card stats-card border-0 shadow-custom fade-in" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+                <div class="card-body text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">
+                                {% if profile_type == 'patient' %}Predictions{% else %}Lab Tests{% endif %}
+                            </h6>
+                            <h2 class="mb-0 fw-bold">0</h2>
+                        </div>
+                        <i class="fas {% if profile_type == 'patient' %}fa-chart-line{% else %}fa-flask{% endif %} fa-3x opacity-25"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    {% endif %}
 </div>
 
 <style>
@@ -264,6 +348,29 @@
     
     .avatar-circle {
         box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .stats-card {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stats-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+    
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #10B981, #059669);
     }
 </style>
 {% endblock %}

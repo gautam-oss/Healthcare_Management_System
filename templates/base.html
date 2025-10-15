@@ -43,14 +43,29 @@
                             <a href="{% url 'users:dashboard' %}" class="nav-link-glass">
                                 <i class="fas fa-tachometer-alt me-1"></i>Dashboard
                             </a>
+                            
+                            <!-- NEW: Medical Records Link for Everyone -->
+                            <a href="{% url 'medical_records:dashboard' %}" class="nav-link-glass">
+                                <i class="fas fa-file-medical me-1"></i>Medical Records
+                            </a>
+                            
+                            <!-- NEW: My Patients Link (Doctors Only) -->
+                            {% if user.user_type == 'doctor' %}
+                            <a href="{% url 'medical_records:doctor_my_patients' %}" class="nav-link-glass">
+                                <i class="fas fa-users-medical me-1"></i>My Patients
+                            </a>
+                            {% endif %}
+                            
                             <a href="{% url 'chatbot:chat' %}" class="nav-link-glass">
                                 <i class="fas fa-robot me-1"></i>AI Chat
                             </a>
+                            
                             {% if user.user_type == 'patient' %}
                             <a href="{% url 'insurance:predict' %}" class="nav-link-glass">
                                 <i class="fas fa-calculator me-1"></i>Insurance
                             </a>
                             {% endif %}
+                            
                             <div class="dropdown">
                                 <button class="btn-glass dropdown-toggle" data-bs-toggle="dropdown">
                                     <i class="fas fa-user-circle me-1"></i>
@@ -66,24 +81,77 @@
                                             <i class="fas fa-user me-2"></i>Profile
                                         </a>
                                     </li>
+                                    
+                                    <!-- Medical Records Menu -->
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'medical_records:dashboard' %}">
+                                            <i class="fas fa-file-medical me-2"></i>Medical Records
+                                        </a>
+                                    </li>
+                                    
+                                    {% if user.user_type == 'patient' %}
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'medical_records:timeline' %}">
+                                                <i class="fas fa-stream me-2"></i>Health Timeline
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'medical_records:prescription_list' %}">
+                                                <i class="fas fa-pills me-2"></i>My Prescriptions
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'medical_records:lab_test_list' %}">
+                                                <i class="fas fa-flask me-2"></i>Lab Tests
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'medical_records:vaccination_list' %}">
+                                                <i class="fas fa-syringe me-2"></i>Vaccinations
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'medical_records:document_list' %}">
+                                                <i class="fas fa-folder-open me-2"></i>Documents
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <!-- Doctor Menu -->
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'medical_records:doctor_my_patients' %}">
+                                                <i class="fas fa-users-medical me-2"></i>My Patients
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'medical_records:prescription_list' %}">
+                                                <i class="fas fa-pills me-2"></i>Prescriptions
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'medical_records:lab_test_list' %}">
+                                                <i class="fas fa-flask me-2"></i>Lab Tests
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    
+                                    <li><hr class="dropdown-divider"></li>
+                                    
+                                    <!-- Appointments -->
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'appointments:my_appointments' %}">
+                                            <i class="fas fa-calendar-check me-2"></i>
+                                            {% if user.user_type == 'patient' %}My Appointments{% else %}Patient Appointments{% endif %}
+                                        </a>
+                                    </li>
+                                    
                                     {% if user.user_type == 'patient' %}
                                     <li>
-                                        <a class="dropdown-item" href="{% url 'appointments:my_appointments' %}">
-                                            <i class="fas fa-calendar-check me-2"></i>My Appointments
-                                        </a>
-                                    </li>
-                                    <li>
                                         <a class="dropdown-item" href="{% url 'insurance:history' %}">
-                                            <i class="fas fa-history me-2"></i>Prediction History
-                                        </a>
-                                    </li>
-                                    {% else %}
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'appointments:my_appointments' %}">
-                                            <i class="fas fa-calendar-check me-2"></i>Patient Appointments
+                                            <i class="fas fa-history me-2"></i>Insurance History
                                         </a>
                                     </li>
                                     {% endif %}
+                                    
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form method="post" action="{% url 'users:logout' %}">
@@ -166,6 +234,7 @@
                         <a href="{% url 'core:home' %}" class="text-white text-decoration-none">Home</a> • 
                         <a href="{% url 'chatbot:chat' %}" class="text-white text-decoration-none">AI Assistant</a> • 
                         <a href="{% url 'insurance:predict' %}" class="text-white text-decoration-none">Insurance</a> • 
+                        <a href="{% url 'medical_records:dashboard' %}" class="text-white text-decoration-none">Medical Records</a> • 
                         <a href="#" class="text-white text-decoration-none">Privacy</a> • 
                         <a href="#" class="text-white text-decoration-none">Terms</a>
                     </p>
@@ -297,6 +366,8 @@
             padding: 0.5rem;
             border: 1px solid rgba(0, 0, 0, 0.05);
             margin-top: 0.5rem;
+            max-height: 500px;
+            overflow-y: auto;
         }
         
         .dropdown-item {

@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% block title %}Medical Records Dashboard - Healthcare Management System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h2 class="text-gradient mb-1">
+                        <i class="fas fa-file-medical me-2"></i>
+                        Medical Records Dashboard
+                    </h2>
+                    <p class="text-muted mb-0">
+                        {% if user.user_type == 'patient' %}
+                            Your complete health records and medical history
+                        {% else %}
+                            Manage patient medical records and health data
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    {% if user.user_type == 'patient' %}
+                        <a href="{% url 'medical_records:timeline' %}" class="btn btn-primary">
+                            <i class="fas fa-stream me-2"></i>Health Timeline
+                        </a>
+                        <a href="{% url 'medical_records:upload_document' %}" class="btn btn-success">
+                            <i class="fas fa-upload me-2"></i>Upload Document
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'medical_records:list' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-list me-2"></i>All Records
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-0 shadow-custom h-100 fade-in" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                <div class="card-body text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Medical Records</h6>
+                            <h2 class="mb-0 fw-bold">{{ total_records|default:0 }}</h2>
+                        </div>
+                        <i class="fas fa-file-medical fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-0 shadow-custom h-100 fade-in" style="background: linear-gradient(135deg, #10B981, #059669);">
+                <div class="card-body text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">
+                                {% if user.user_type == 'patient' %}Active Prescriptions{% else %}Total Prescriptions{% endif %}
+                            </h6>
+                            <h2 class="mb-0 fw-bold">
+                                {% if user.user_type == 'patient' %}
+                                    {{ active_prescriptions|default:0 }}
+                                {% else %}
+                                    {{ total_prescriptions|default:0 }}
+                                {% endif %}
+                            </h2>
+                        </div>
+                        <i class="fas fa-pills fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-0 shadow-custom h-100 fade-in" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+                <div class="card-body text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Pending Tests</h6>
+                            <h2 class="mb-0 fw-bold">{{ pending_tests|default:0 }}</h2>
+                        </div>
+                        <i class="fas fa-flask fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-0 shadow-custom h-100 fade-in" style="background: linear-gradient(135deg, #3B82F6, #2563EB);">
+                <div class="card-body text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Vaccinations</h6>
+                            <h2 class="mb-0 fw-bold">{{ total_vaccinations|default:0 }}</h2>
+                        </div>
+                        <i class="fas fa-syringe fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Records & Quick Links -->
+    <div class="row g-4">
+        <!-- Recent Medical Records -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-custom h-100">
+                <div class="card-header bg-gradient-primary text-white border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>Recent Medical Records
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_records %}
+                        <div class="list-group list-group-flush">
+                            {% for record in recent_records %}
+                                <a href="{% url 'medical_records:detail' record.id %}" 
+                                   class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">
+                                                {% if user.user_type == 'patient' %}
+                                                    Dr. {{ record.doctor.user.get_full_name }}
+                                                {% else %}
+                                                    {{ record.patient.user.get_full_name }}
+                                                {% endif %}
+                                            </h6>
+                                            <p class="mb-1 text-muted small">
+                                                <strong>Diagnosis:</strong> {{ record.diagnosis|truncatewords:15 }}
+                                            </p>
+                                            <small class="text-muted">
+                                                <i class="far fa-calendar me-1"></i>
+                                                {{ record.created_at|date:"M d, Y" }}
+                                            </small>
+                                        </div>
+                                        <i class="fas fa-chevron-right text-muted"></i>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-file-medical fa-3x text-muted opacity-25 mb-3"></i>
+                            <p class="text-muted">No medical records yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+                {% if recent_records %}
+                    <div class="card-footer bg-light border-0 text-center">
+                        <a href="{% url 'medical_records:list' %}" class="btn btn-sm btn-outline-primary">
+                            View All Records <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Links & Active Prescriptions -->
+        <div class="col-lg-4">
+            <!-- Quick Links -->
+            <div class="card border-0 shadow-custom mb-4">
+                <div class="card-header bg-gradient-success text-white border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'medical_records:prescription_list' %}" class="btn btn-outline-primary text-start">
+                            <i class="fas fa-pills me-2"></i>My Prescriptions
+                        </a>
+                        <a href="{% url 'medical_records:lab_test_list' %}" class="btn btn-outline-primary text-start">
+                            <i class="fas fa-flask me-2"></i>Lab Tests
+                        </a>
+                        <a href="{% url 'medical_records:vaccination_list' %}" class="btn btn-outline-primary text-start">
+                            <i class="fas fa-syringe me-2"></i>Vaccinations
+                        </a>
+                        <a href="{% url 'medical_records:document_list' %}" class="btn btn-outline-primary text-start">
+                            <i class="fas fa-folder-open me-2"></i>Documents
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% if user.user_type == 'patient' and active_prescriptions_list %}
+                <!-- Active Prescriptions -->
+                <div class="card border-0 shadow-custom">
+                    <div class="card-header bg-gradient-success text-white border-0">
+                        <h5 class="mb-0">
+                            <i class="fas fa-pills me-2"></i>Active Prescriptions
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            {% for prescription in active_prescriptions_list %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">{{ prescription.medication_name }}</h6>
+                                            <small class="text-muted d-block">
+                                                {{ prescription.dosage }} - {{ prescription.frequency }}
+                                            </small>
+                                            <small class="text-muted">
+                                                <i class="far fa-clock me-1"></i>
+                                                {{ prescription.duration }}
+                                            </small>
+                                        </div>
+                                        <span class="badge bg-success">Active</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if user.user_type == 'patient' and upcoming_vaccinations %}
+                <!-- Upcoming Vaccinations -->
+                <div class="card border-0 shadow-custom mt-4">
+                    <div class="card-header bg-gradient-warning text-white border-0">
+                        <h5 class="mb-0">
+                            <i class="fas fa-syringe me-2"></i>Upcoming Vaccinations
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            {% for vaccination in upcoming_vaccinations %}
+                                <div class="list-group-item">
+                                    <h6 class="mb-1">{{ vaccination.vaccine_name }}</h6>
+                                    <small class="text-muted d-block">
+                                        Next Dose: {{ vaccination.next_dose_date|date:"M d, Y" }}
+                                    </small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if user.user_type == 'doctor' and pending_tests_list %}
+                <!-- Pending Tests (for doctors) -->
+                <div class="card border-0 shadow-custom">
+                    <div class="card-header bg-gradient-warning text-white border-0">
+                        <h5 class="mb-0">
+                            <i class="fas fa-flask me-2"></i>Pending Tests
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            {% for test in pending_tests_list %}
+                                <a href="{% url 'medical_records:add_lab_result' test.id %}" 
+                                   class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">{{ test.test_name }}</h6>
+                                            <small class="text-muted d-block">
+                                                Patient: {{ test.patient.user.get_full_name }}
+                                            </small>
+                                            <small class="text-muted">
+                                                Ordered: {{ test.ordered_date|date:"M d, Y" }}
+                                            </small>
+                                        </div>
+                                        <span class="badge bg-warning">{{ test.get_status_display }}</span>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

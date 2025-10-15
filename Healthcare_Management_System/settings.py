@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "appointments",
     "chatbot",
     "insurance",
+    "medical_records",
 ]
 
 MIDDLEWARE = [
@@ -109,3 +110,6 @@ GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
 # Redirects
 LOGIN_REDIRECT_URL = "users:dashboard"
 LOGOUT_REDIRECT_URL = "users:login"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
