@@ -12,7 +12,7 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ## 📸 Screenshots
 
 ### 🏠 Homepage - Hero Section
-![Homepage](https://i.postimg.cc/bGGQMd3V/Screenshot-2025-10-31-191639.png)
+![Homepage](https://postimg.cc/bGGQMd3V)
 
 *Modern landing page featuring:*
 - **Gradient Hero Design**: Eye-catching purple gradient background
