@@ -12,7 +12,7 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ## 📸 Screenshots
 
 ### 🏠 Homepage - Hero Section
-![Homepage](https://i.imgur.com/YOUR_IMAGE_ID.png)
+![Homepage](https://i.postimg.cc/bGGQMd3V/Screenshot-2025-10-31-191639.png)
 
 *Modern landing page featuring:*
 - **Gradient Hero Design**: Eye-catching purple gradient background
@@ -24,7 +24,7 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ---
 
 ### ⚡ Powerful Features Section
-![Features Overview](https://i.imgur.com/YOUR_IMAGE_ID.png)
+![Features Overview](https://i.postimg.cc/yJJF5WLV/Screenshot-2025-10-31-191654.png)
 
 *Showcasing four core features:*
 
@@ -38,7 +38,7 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ---
 
 ### 🤖 AI Health Assistant - Chat Interface
-![AI Chatbot](https://i.imgur.com/YOUR_IMAGE_ID.png)
+![AI Chatbot](https://i.postimg.cc/94vGjVkW/Screenshot-2025-10-31-191728.png)
 
 *Intelligent health companion powered by Google Gemini AI:*
 
@@ -64,7 +64,7 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ---
 
 ### 💰 Insurance Cost Predictor - ML Form
-![Insurance Predictor](https://i.imgur.com/YOUR_IMAGE_ID.png)
+![Insurance Predictor](https://i.postimg.cc/CZWjVY2S/Screenshot-2025-10-31-191756.png)
 
 *AI-powered insurance cost estimation using Linear Regression:*
 
@@ -692,3 +692,13 @@ docker-compose up --build
 <p align="center">
   <a href="#top">⬆️ Back to Top</a>
 </p>
+
+
+[url=https://postimg.cc/bGGQMd3V][img]https://i.postimg.cc/bGGQMd3V/Screenshot-2025-10-31-191639.png[/img][/url]
+
+[url=https://postimg.cc/yJJF5WLV][img]https://i.postimg.cc/yJJF5WLV/Screenshot-2025-10-31-191654.png[/img][/url]
+
+[url=https://postimg.cc/94vGjVkW][img]https://i.postimg.cc/94vGjVkW/Screenshot-2025-10-31-191728.png[/img][/url]
+
+[url=https://postimg.cc/CZWjVY2S][img]https://i.postimg.cc/CZWjVY2S/Screenshot-2025-10-31-191756.png[/img][/url]
+
