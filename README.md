@@ -12,7 +12,7 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ## 📸 Screenshots
 
 ### 🏠 Homepage - Hero Section
-![Homepage](https://ibb.co/QjJnFBTD)
+![Homepage](https://github.com/gautam-oss/Healthcare_Management_System/blob/main/static/image/Screenshot%202025-10-31%20191639.png)
 
 *Modern landing page featuring:*
 - **Gradient Hero Design**: Eye-catching purple gradient background
@@ -24,7 +24,7 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ---
 
 ### ⚡ Powerful Features Section
-![Features Overview](https://ibb.co/sBzcCR1)
+![Features Overview](https://github.com/gautam-oss/Healthcare_Management_System/blob/main/static/image/Screenshot%202025-10-31%20191654.png)
 
 *Showcasing four core features:*
 
@@ -38,7 +38,7 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ---
 
 ### 🤖 AI Health Assistant - Chat Interface
-![AI Chatbot](https://ibb.co/ST0CqLw)
+![AI Chatbot](https://github.com/gautam-oss/Healthcare_Management_System/blob/main/static/image/Screenshot%202025-10-31%20191728.png)
 
 *Intelligent health companion powered by Google Gemini AI:*
 
@@ -64,7 +64,7 @@ A comprehensive full-stack healthcare platform that connects patients and doctor
 ---
 
 ### 💰 Insurance Cost Predictor - ML Form
-![Insurance Predictor](https://ibb.co/XZb4pyk8)
+![Insurance Predictor](https://github.com/gautam-oss/Healthcare_Management_System/blob/main/static/image/Screenshot%202025-10-31%20191756.png)
 
 *AI-powered insurance cost estimation using Linear Regression:*
 
